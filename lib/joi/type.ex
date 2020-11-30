@@ -6,6 +6,7 @@ defmodule Joi.Type do
   def validate(type, field, data, option) do
     cond do
       type == :number -> Type.Number.validate_field(field, data, option)
+      type == :string -> Type.String.validate_field(field, data, option)
       true -> {:ok, data}
     end
   end
