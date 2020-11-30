@@ -13,7 +13,9 @@ defmodule Joi.Type.String do
            {:ok, params} <- min_length_validate(field, params, options),
            {:ok, params} <- max_length_validate(field, params, options),
            {:ok, params} <- length_validate(field, params, options),
-           {:ok, params} <- regex_validate(field, params, options) do
+           {:ok, params} <- regex_validate(field, params, options),
+           {:ok, params} <-
+             uuid_validate(field, params, options) do
         {:ok, params}
       end
     end
@@ -102,6 +104,22 @@ defmodule Joi.Type.String do
       {:error, "#{field} must be in a valid format"}
     else
       {:ok, params}
+    end
+  end
+
+  defp uuid_validate(field, params, options) when is_list(options) do
+    uuid = Keyword.get(options, :uuid)
+
+    case is_nil(uuid) do
+      true -> {:ok, params}
+      false -> uuid_validate(field, params)
+    end
+  end
+
+  defp uuid_validate(field, params) do
+    case UUID.info(params[field]) do
+      {:ok, _} -> {:ok, params}
+      _ -> {:error, "#{field} is not a valid uuid"}
     end
   end
 end

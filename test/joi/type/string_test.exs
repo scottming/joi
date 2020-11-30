@@ -257,6 +257,24 @@ defmodule Joi.Type.StringTest do
     end
   end
 
+  describe "uuid validation" do
+    test "success: when is a valid UUID" do
+      field = :id
+      data = %{id: UUID.uuid4()}
+      schema = %{id: [:string, uuid: true]}
+
+      assert Joi.validate(data, schema) == {:ok, data}
+    end
+
+    test "error: when is not a valid UUID" do
+      field = :id
+      data = %{id: "12345"}
+      schema = %{id: [:string, uuid: true]}
+
+      assert Joi.validate(data, schema) == {:error, "#{field} is not a valid uuid"}
+    end
+  end
+
   # describe "trim extra whitespaces" do
   #   test "returns :ok with new parameters having trimmed values when trim is set to true" do
   #     data = %{id: " abc "}
