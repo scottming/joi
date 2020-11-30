@@ -5,40 +5,9 @@ defmodule Joi do
 
   alias Joi.Type
 
-  @doc """
-  Validates and converts data based on a schema.
-
-  ## Examples
-
-      iex> Joi.validate(%{"id" => "123"}, %{"id" => %Joi.Type.Number{}})
-      {:ok, %{"id" => 123}}
-
-      iex> Joi.validate(%{"id" => "asdf"}, %{"id" => %Joi.Type.Number{}})
-      {:error, "id must be a number"}
-
-  """
-  @spec validate(map, map) :: {:ok, map} | {:error, String.t()}
   def validate(data, schema) do
-    case validate_allowed_params(data, schema) do
-      :ok -> validate_schema(data, schema)
-      {:error, msg} -> {:error, msg}
-    end
-  end
-
-  @spec validate_allowed_params(map, map) :: :ok | {:error, String.t()}
-  defp validate_allowed_params(data, schema) do
-    result = Map.keys(data) -- Map.keys(schema)
-
-    case result do
-      [] -> :ok
-      [field | _rest] -> {:error, "#{field} is not allowed"}
-    end
-  end
-
-  @spec validate_schema(map, map) :: {:ok, map} | {:error, String.t()}
-  defp validate_schema(data, schema) do
-    Enum.reduce_while(schema, {:ok, data}, fn {field, type}, {:ok, modified_data} ->
-      case Type.validate(type, field, modified_data) do
+    Enum.reduce_while(schema, {:ok, data}, fn {field, [type | options]}, {:ok, modified_data} ->
+      case Type.validate(type, field, modified_data, options) do
         {:error, msg} ->
           {:halt, {:error, msg}}
 

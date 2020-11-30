@@ -1,16 +1,12 @@
-defprotocol Joi.Type do
+defmodule Joi.Type do
   @moduledoc false
 
-  alias Joi.Type
+  alias __MODULE__
 
-  @type t ::
-          Type.Any.t()
-          | Type.Boolean.t()
-          | Type.DateTime.t()
-          | Type.List.t()
-          | Type.Number.t()
-          | Type.String.t()
-
-  @spec validate(t(), term, map) :: {:ok, map} | {:error, String.t()}
-  def validate(type, field, data)
+  def validate(type, field, data, option) do
+    cond do
+      type == :number -> Type.Number.validate_field(field, data, option)
+      true -> {:ok, data}
+    end
+  end
 end

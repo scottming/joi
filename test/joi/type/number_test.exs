@@ -1,92 +1,104 @@
 defmodule Joi.Type.NumberTest do
   use ExUnit.Case, async: true
-  doctest Joi.Type.Number
 
   alias Joi.Type
 
   describe "validate_field/3" do
-    test "validates Type.Number fields in a schema" do
-      field = "id"
-      data = %{"id" => 1}
+    @tag :unit
+    test "success: validates Type.Number fields in a schema" do
+      data = %{id: 1}
 
-      type = %Type.Number{
-        required: true
-      }
+      field = :id
+      schema = %{id: [:number]}
+      [_type | options] = schema[field]
 
-      assert Type.Number.validate_field(type, field, data) == {:ok, data}
+      assert Type.Number.validate_field(field, data, options) == {:ok, data}
     end
 
-    test "does not error if the field is not provided and not required" do
-      field = "id"
+    @tag :unit
+    test "error: when field is nil" do
+      data = %{}
+      expected_error = {:error, "id is required"}
+
+      field = :id
+      schema = %{id: [:number]}
+      [_type | options] = schema[field]
+
+      assert Type.Number.validate_field(field, data, options) == expected_error
+    end
+
+    @tag :unit
+    test "success: if the field is not provided and not required" do
       data = %{}
 
-      type = %Type.Number{
-        min: 3
-      }
+      field = :id
+      schema = %{id: [:number, required: false]}
+      [_type | options] = schema[field]
 
-      assert Type.Number.validate_field(type, field, data) == {:ok, data}
+      assert Type.Number.validate_field(field, data, options) == {:ok, data}
     end
   end
 
   describe "convert string to number" do
-    test "returns :ok with modified value" do
-      float_data = %{"id" => ".6"}
-      integer_data = %{"id" => "6"}
-      modified_float_data = %{"id" => 0.6}
-      modified_integer_data = %{"id" => 6}
+    @tag :integration
+    test "success: with modified value" do
+      float_data = %{id: ".6"}
+      integer_data = %{id: "6"}
+      modified_float_data = %{id: 0.6}
+      modified_integer_data = %{id: 6}
 
-      schema = %{
-        "id" => %Joi.Type.Number{}
+      integer_schema = %{
+        id: [:number]
       }
 
-      assert Joi.validate(integer_data, schema) == {:ok, modified_integer_data}
-      assert Joi.validate(float_data, schema) == {:ok, modified_float_data}
+      float_schema = %{
+        id: [:number, integer: false]
+      }
+
+      assert Joi.validate(integer_data, integer_schema) == {:ok, modified_integer_data}
+      assert Joi.validate(float_data, float_schema) == {:ok, modified_float_data}
     end
 
-    test "errors if field type is neither number or stringified number" do
-      invalid_number = %{"id" => "1.a"}
-      boolean_data = %{"id" => true}
+    @tag :integration
+    test "error: if field type is neither number or stringified number" do
+      invalid_number = %{id: "1.a"}
+      boolean_data = %{id: true}
 
       schema = %{
-        "id" => %Joi.Type.Number{}
+        id: [:number]
       }
 
       assert Joi.validate(invalid_number, schema) == {:error, "id must be a number"}
       assert Joi.validate(boolean_data, schema) == {:error, "id must be a number"}
     end
 
-    test "does not convert nil to a number" do
-      field = "id"
-      data = %{"id" => nil}
+    @tag :unit
+    test "success: does not convert nil to a number" do
+      field = :id
+      data = %{id: nil}
+      # The default required is true
+      options = [required: false]
 
-      type = %Type.Number{}
-
-      assert Type.Number.validate_field(type, field, data) == {:ok, data}
+      assert Type.Number.validate_field(field, data, options) == {:ok, data}
     end
   end
 
   describe "minimum validation" do
-    test "returns :ok when field is more than or equal to min value" do
-      data = %{"id" => 6}
+    test "success: returns :ok when field is more than or equal to min value" do
+      data = %{id: 6}
 
       schema = %{
-        "id" => %Joi.Type.Number{
-          required: true,
-          min: 3
-        }
+        id: [:number, min: 3]
       }
 
       assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when field is less than min" do
-      data = %{"id" => 1}
+      data = %{id: 1}
 
       schema = %{
-        "id" => %Joi.Type.Number{
-          required: true,
-          min: 3
-        }
+        id: [:number, min: 3]
       }
 
       assert Joi.validate(data, schema) == {:error, "id must be greater than or equal to 3"}
@@ -95,26 +107,20 @@ defmodule Joi.Type.NumberTest do
 
   describe "maximum validation" do
     test "returns :ok when field is less than or equal to max" do
-      data = %{"id" => 1}
+      data = %{id: 1}
 
       schema = %{
-        "id" => %Joi.Type.Number{
-          required: true,
-          max: 3
-        }
+        id: [:number, max: 3]
       }
 
       assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when field is more than max" do
-      data = %{"id" => 6}
+      data = %{id: 6}
 
       schema = %{
-        "id" => %Joi.Type.Number{
-          required: true,
-          max: 3
-        }
+        id: [:number, max: 3]
       }
 
       assert Joi.validate(data, schema) == {:error, "id must be less than or equal to 3"}
@@ -123,26 +129,20 @@ defmodule Joi.Type.NumberTest do
 
   describe "integer type validation" do
     test "returns :ok when field is an integer and the schema property integer is set to true" do
-      data = %{"id" => 1}
+      data = %{id: 1}
 
       schema = %{
-        "id" => %Joi.Type.Number{
-          required: true,
-          integer: true
-        }
+        id: [:number]
       }
 
       assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when field is a float and the schema property integer is set to true" do
-      data = %{"id" => 1.6}
+      data = %{id: 1.6}
 
       schema = %{
-        "id" => %Joi.Type.Number{
-          required: true,
-          integer: true
-        }
+        id: [:number]
       }
 
       assert Joi.validate(data, schema) == {:error, "id must be an integer"}

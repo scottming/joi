@@ -1,87 +1,25 @@
 defmodule Joi.Type.Number do
-  @moduledoc """
-  This type validates that values are numbers, and converts them to numbers if
-  possible. It converts "stringified" numerical values to numbers.
+  import Joi.Validator.Skipping
 
-  ## Options
+  @default_options [integer: true, required: true]
 
-    * `:default` - Setting `:default` will populate a field with the provided
-      value, assuming that it is not present already. If a field already has a
-      value present, it will not be altered.
+  def validate_field(field, params, options) do
+    options = Keyword.merge(@default_options, options)
 
-    * `:min` - Specifies the minimum value of the field.
-
-    * `:max` - Specifies the maximum value of the field.
-
-    * `:integer` - Specifies that the number must be an integer (no floating
-      point). Allowed values are `true` and `false`. The default is `false`.
-
-    * `:required` - Setting `:required` to `true` will cause a validation error
-      when a field is not present or the value is `nil`. Allowed values for
-      required are `true` and `false`. The default is `false`.
-
-  ## Examples
-
-      iex> schema = %{
-      ...>   "id" => %Joi.Type.Number{
-      ...>     integer: true
-      ...>   },
-      ...>   "gpa" => %Joi.Type.Number{
-      ...>     min: 0,
-      ...>     max: 4
-      ...>   }
-      ...> }
-      iex> params = %{"id" => "123", "gpa" => 3.8}
-      iex> Joi.validate(params, schema)
-      {:ok, %{"id" => 123, "gpa" => 3.8}}
-      iex> params = %{"id" => "123.456", "gpa" => 3.8}
-      iex> Joi.validate(params, schema)
-      {:error, "id must be an integer"}
-
-      iex> schema = %{
-      ...>   "gpa" => %Joi.Type.Number{
-      ...>     default: 4
-      ...>   }
-      ...> }
-      iex> Joi.validate(%{}, schema)
-      {:ok, %{"gpa" => 4}}
-
-  """
-
-  defstruct [
-    :min,
-    :max,
-    default: Joi.Type.Any.NoDefault,
-    integer: false,
-    required: false
-  ]
-
-  @type t :: %__MODULE__{
-          default: any,
-          min: number | nil,
-          max: number | nil,
-          integer: boolean,
-          required: boolean
-        }
-
-  alias Joi.{Default, Required}
-
-  @spec validate_field(t, term, map) :: {:ok, map} | {:error, String.t()}
-  def validate_field(type, field, data) do
-    with {:ok, data} <- Required.validate(type, field, data),
-         {:ok, data} <- convert(type, field, data),
-         {:ok, data} <- min_validate(type, field, data),
-         {:ok, data} <- max_validate(type, field, data),
-         {:ok, data} <- integer_validate(type, field, data) do
-      {:ok, data}
-    else
-      {:ok_not_present, data} -> Default.validate(type, field, data)
-      {:error, msg} -> {:error, msg}
+    unless_skipping(field, params, options) do
+      with {:ok, params} <- convert(field, params, options),
+           {:ok, params} <- integer_validate(field, params, options),
+           {:ok, params} <- min_validate(field, params, options),
+           {:ok, params} <-
+             max_validate(field, params, options) do
+        {:ok, params}
+      else
+        {:error, msg} -> {:error, msg}
+      end
     end
   end
 
-  @spec convert(t, term, map) :: {:ok, map} | {:error, String.t()}
-  defp convert(%__MODULE__{}, field, params) do
+  defp convert(field, params, _option) do
     cond do
       params[field] == nil ->
         {:ok, params}
@@ -98,7 +36,6 @@ defmodule Joi.Type.Number do
     end
   end
 
-  @spec string_to_number(binary) :: number | nil
   defp string_to_number(str) do
     str = if String.starts_with?(str, "."), do: "0" <> str, else: str
 
@@ -109,7 +46,6 @@ defmodule Joi.Type.Number do
     end
   end
 
-  @spec string_to_integer(binary) :: number | nil
   defp string_to_integer(str) do
     case Integer.parse(str) do
       {num, ""} -> num
@@ -117,7 +53,6 @@ defmodule Joi.Type.Number do
     end
   end
 
-  @spec string_to_float(binary) :: number | nil
   defp string_to_float(str) do
     case Float.parse(str) do
       {num, ""} -> num
@@ -125,12 +60,18 @@ defmodule Joi.Type.Number do
     end
   end
 
-  @spec integer_validate(t, term, map) :: {:ok, map} | {:error, String.t()}
-  defp integer_validate(%__MODULE__{integer: false}, _field, params) do
+  defp integer_validate(field, params, options) when is_list(options) do
+    case Keyword.get(options, :integer) do
+      false -> integer_validate(field, params, false)
+      _ -> integer_validate(field, params, true)
+    end
+  end
+
+  defp integer_validate(_field, params, false) do
     {:ok, params}
   end
 
-  defp integer_validate(%__MODULE__{integer: true}, field, params) do
+  defp integer_validate(field, params, true) do
     if is_integer(params[field]) do
       {:ok, params}
     else
@@ -138,13 +79,17 @@ defmodule Joi.Type.Number do
     end
   end
 
-  @spec min_validate(t, term, map) :: {:ok, map} | {:error, String.t()}
-  defp min_validate(%__MODULE__{min: nil}, _field, params) do
-    {:ok, params}
+  defp min_validate(field, params, options) when is_list(options) do
+    min = Keyword.get(options, :min)
+
+    case is_number(min) do
+      true -> min_validate(field, params, min)
+      # when nil or not number
+      false -> {:ok, params}
+    end
   end
 
-  defp min_validate(%__MODULE__{min: min}, field, params)
-       when is_number(min) do
+  defp min_validate(field, params, min) do
     if params[field] < min do
       {:error, "#{field} must be greater than or equal to #{min}"}
     else
@@ -152,24 +97,21 @@ defmodule Joi.Type.Number do
     end
   end
 
-  @spec max_validate(t, term, map) :: {:ok, map} | {:error, String.t()}
-  defp max_validate(%__MODULE__{max: nil}, _field, params) do
-    {:ok, params}
+  defp max_validate(field, params, options) when is_list(options) do
+    max = Keyword.get(options, :max)
+
+    case is_number(max) do
+      true -> max_validate(field, params, max)
+      # when nil or not number
+      false -> {:ok, params}
+    end
   end
 
-  defp max_validate(%__MODULE__{max: max}, field, params)
-       when is_number(max) do
+  defp max_validate(field, params, max) do
     if params[field] > max do
       {:error, "#{field} must be less than or equal to #{max}"}
     else
       {:ok, params}
     end
-  end
-
-  defimpl Joi.Type do
-    alias Joi.Type
-
-    @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
-    def validate(type, field, data), do: Type.Number.validate_field(type, field, data)
   end
 end
