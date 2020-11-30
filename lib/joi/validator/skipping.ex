@@ -14,8 +14,12 @@ defmodule Joi.Validator.Skipping do
     end
   end
 
-  def skip?(options) do
+  def skip?(options) when is_list(options)do
     Keyword.get(options, :required) == false
+  end
+
+  def skip?(%{required: required}) do
+    required == false
   end
 
   def unless_field_not_nil(field, params) do

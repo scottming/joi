@@ -3,10 +3,12 @@ defmodule Joi.Type do
 
   alias __MODULE__
 
-  def validate(type, field, data, option) do
+  def validate(type, field, data, options) do
     cond do
-      type == :number -> Type.Number.validate_field(field, data, option)
-      type == :string -> Type.String.validate_field(field, data, option)
+      type == :number -> Type.Number.validate_field(field, data, options)
+      type == :string -> Type.String.validate_field(field, data, options)
+      type == :list -> Type.List.validate_field(field, data, options)
+      type == :boolean -> Type.Boolean.validate_field(field, data, options)
       true -> {:ok, data}
     end
   end

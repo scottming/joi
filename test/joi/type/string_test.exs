@@ -259,7 +259,6 @@ defmodule Joi.Type.StringTest do
 
   describe "uuid validation" do
     test "success: when is a valid UUID" do
-      field = :id
       data = %{id: UUID.uuid4()}
       schema = %{id: [:string, uuid: true]}
 
