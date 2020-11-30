@@ -1,4 +1,4 @@
-defmodule Litmus.Type.Boolean do
+defmodule Joi.Type.Boolean do
   @moduledoc """
   This type validates and converts values to booleans. It converts truthy and
   falsy values to `true` or `false`.
@@ -25,36 +25,36 @@ defmodule Litmus.Type.Boolean do
   ## Examples
 
       iex> schema = %{
-      ...>   "new_user" => %Litmus.Type.Boolean{
+      ...>   "new_user" => %Joi.Type.Boolean{
       ...>     truthy: ["1"],
       ...>     falsy: ["0"]
       ...>   }
       ...> }
       iex> params = %{"new_user" => "1"}
-      iex> Litmus.validate(params, schema)
+      iex> Joi.validate(params, schema)
       {:ok, %{"new_user" => true}}
 
       iex> schema = %{
-      ...>   "new_user" => %Litmus.Type.Boolean{
+      ...>   "new_user" => %Joi.Type.Boolean{
       ...>     default: false
       ...>   }
       ...> }
-      iex> Litmus.validate(%{}, schema)
+      iex> Joi.validate(%{}, schema)
       {:ok, %{"new_user" => false}}
 
-      iex> schema = %{"new_user" => %Litmus.Type.Boolean{}}
+      iex> schema = %{"new_user" => %Joi.Type.Boolean{}}
       iex> params = %{"new_user" => 0}
-      iex> Litmus.validate(params, schema)
+      iex> Joi.validate(params, schema)
       {:error, "new_user must be a boolean"}
 
   """
 
-  alias Litmus.{Default, Required}
+  alias Joi.{Default, Required}
 
   @truthy_default [true, "true"]
   @falsy_default [false, "false"]
 
-  defstruct default: Litmus.Type.Any.NoDefault,
+  defstruct default: Joi.Type.Any.NoDefault,
             truthy: @truthy_default,
             falsy: @falsy_default,
             required: false
@@ -114,8 +114,8 @@ defmodule Litmus.Type.Boolean do
     end
   end
 
-  defimpl Litmus.Type do
-    alias Litmus.Type
+  defimpl Joi.Type do
+    alias Joi.Type
 
     @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
     def validate(type, field, data), do: Type.Boolean.validate_field(type, field, data)

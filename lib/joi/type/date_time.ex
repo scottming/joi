@@ -1,4 +1,4 @@
-defmodule Litmus.Type.DateTime do
+defmodule Joi.Type.DateTime do
   @moduledoc """
   This type validates DateTimes. It accepts either `DateTime` structs or
   ISO-8601 strings. ISO-8601 datetime with timezone strings will be converted
@@ -16,27 +16,27 @@ defmodule Litmus.Type.DateTime do
 
   ## Examples
 
-      iex> schema = %{"start_date" => %Litmus.Type.DateTime{}}
-      iex> {:ok, %{"start_date" => datetime}} = Litmus.validate(%{"start_date" => "2017-06-18T05:45:33Z"}, schema)
+      iex> schema = %{"start_date" => %Joi.Type.DateTime{}}
+      iex> {:ok, %{"start_date" => datetime}} = Joi.validate(%{"start_date" => "2017-06-18T05:45:33Z"}, schema)
       iex> DateTime.to_iso8601(datetime)
       "2017-06-18T05:45:33Z"
 
       iex> {:ok, default_datetime, _} = DateTime.from_iso8601("2019-05-01T06:25:00-0700")
       ...> schema = %{
-      ...>   "start_date" => %Litmus.Type.DateTime{
+      ...>   "start_date" => %Joi.Type.DateTime{
       ...>     default: default_datetime
       ...>   }
       ...> }
-      iex> {:ok, %{"start_date" => datetime}} = Litmus.validate(%{}, schema)
+      iex> {:ok, %{"start_date" => datetime}} = Joi.validate(%{}, schema)
       iex> DateTime.to_iso8601(datetime)
       "2019-05-01T13:25:00Z"
 
   """
 
-  alias Litmus.{Default, Required}
-  alias Litmus.Type
+  alias Joi.{Default, Required}
+  alias Joi.Type
 
-  defstruct default: Litmus.Type.Any.NoDefault,
+  defstruct default: Joi.Type.Any.NoDefault,
             required: false
 
   @type t :: %__MODULE__{
@@ -84,8 +84,8 @@ defmodule Litmus.Type.DateTime do
     {:error, "#{field} must be a valid ISO-8601 datetime"}
   end
 
-  defimpl Litmus.Type do
-    alias Litmus.Type
+  defimpl Joi.Type do
+    alias Joi.Type
 
     @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
     def validate(type, field, data), do: Type.DateTime.validate_field(type, field, data)

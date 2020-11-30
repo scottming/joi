@@ -1,7 +1,7 @@
-defmodule Litmus.Default do
+defmodule Joi.Default do
   @moduledoc false
 
-  alias Litmus.Type.Any.NoDefault
+  alias Joi.Type.Any.NoDefault
 
   @spec validate(map, term, map) :: {:ok, map}
   def validate(%{default: default_value}, field, params) when default_value != NoDefault do

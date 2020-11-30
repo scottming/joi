@@ -1,4 +1,4 @@
-defmodule Litmus.Type.Number do
+defmodule Joi.Type.Number do
   @moduledoc """
   This type validates that values are numbers, and converts them to numbers if
   possible. It converts "stringified" numerical values to numbers.
@@ -23,27 +23,27 @@ defmodule Litmus.Type.Number do
   ## Examples
 
       iex> schema = %{
-      ...>   "id" => %Litmus.Type.Number{
+      ...>   "id" => %Joi.Type.Number{
       ...>     integer: true
       ...>   },
-      ...>   "gpa" => %Litmus.Type.Number{
+      ...>   "gpa" => %Joi.Type.Number{
       ...>     min: 0,
       ...>     max: 4
       ...>   }
       ...> }
       iex> params = %{"id" => "123", "gpa" => 3.8}
-      iex> Litmus.validate(params, schema)
+      iex> Joi.validate(params, schema)
       {:ok, %{"id" => 123, "gpa" => 3.8}}
       iex> params = %{"id" => "123.456", "gpa" => 3.8}
-      iex> Litmus.validate(params, schema)
+      iex> Joi.validate(params, schema)
       {:error, "id must be an integer"}
 
       iex> schema = %{
-      ...>   "gpa" => %Litmus.Type.Number{
+      ...>   "gpa" => %Joi.Type.Number{
       ...>     default: 4
       ...>   }
       ...> }
-      iex> Litmus.validate(%{}, schema)
+      iex> Joi.validate(%{}, schema)
       {:ok, %{"gpa" => 4}}
 
   """
@@ -51,7 +51,7 @@ defmodule Litmus.Type.Number do
   defstruct [
     :min,
     :max,
-    default: Litmus.Type.Any.NoDefault,
+    default: Joi.Type.Any.NoDefault,
     integer: false,
     required: false
   ]
@@ -64,7 +64,7 @@ defmodule Litmus.Type.Number do
           required: boolean
         }
 
-  alias Litmus.{Default, Required}
+  alias Joi.{Default, Required}
 
   @spec validate_field(t, term, map) :: {:ok, map} | {:error, String.t()}
   def validate_field(type, field, data) do
@@ -166,8 +166,8 @@ defmodule Litmus.Type.Number do
     end
   end
 
-  defimpl Litmus.Type do
-    alias Litmus.Type
+  defimpl Joi.Type do
+    alias Joi.Type
 
     @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
     def validate(type, field, data), do: Type.Number.validate_field(type, field, data)

@@ -1,11 +1,11 @@
-defmodule Litmus.MixProject do
+defmodule Joi.MixProject do
   use Mix.Project
 
-  @github_url "https://github.com/lob/litmus"
+  @github_url "https://github.com/scottming/joi"
 
   def project do
     [
-      app: :litmus,
+      app: :joi,
       version: "1.0.1",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
@@ -17,7 +17,7 @@ defmodule Litmus.MixProject do
       ],
 
       # Docs
-      name: "litmus",
+      name: "joi",
       description: "Data validation in elixir",
       source_url: @github_url,
       homepage_url: @github_url,
@@ -57,7 +57,6 @@ defmodule Litmus.MixProject do
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.11", only: :test},
-      {:plug, "~> 1.8", optional: true},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end

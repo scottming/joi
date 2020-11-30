@@ -1,8 +1,8 @@
-defmodule Litmus.RequiredTest do
+defmodule Joi.RequiredTest do
   use ExUnit.Case, async: true
 
-  alias Litmus.Required
-  alias Litmus.Type
+  alias Joi.Required
+  alias Joi.Type
 
   describe "validate/3" do
     test "returns ok when field is required and is present in params" do

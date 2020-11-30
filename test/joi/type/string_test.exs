@@ -1,8 +1,8 @@
-defmodule Litmus.Type.StringTest do
+defmodule Joi.Type.StringTest do
   use ExUnit.Case, async: true
-  doctest Litmus.Type.String
+  doctest Joi.Type.String
 
-  alias Litmus.Type
+  alias Joi.Type
 
   describe "validate_field/3" do
     test "validates property values of data based on their String schema definition in Type.String module" do
@@ -23,37 +23,37 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "abc"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           required: true,
           min_length: min_length
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is nil and min_length is 0" do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           min_length: 0
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is an empty string and min_length is 0" do
       data = %{"id" => ""}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           min_length: 0
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when length of field is less than min_length" do
@@ -62,13 +62,13 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "ab"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           required: true,
           min_length: min_length
         }
       }
 
-      assert Litmus.validate(data, schema) ==
+      assert Joi.validate(data, schema) ==
                {:error,
                 "#{field} length must be greater than or equal to #{min_length} characters"}
     end
@@ -79,12 +79,12 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           min_length: min_length
         }
       }
 
-      assert Litmus.validate(data, schema) ==
+      assert Joi.validate(data, schema) ==
                {:error,
                 "#{field} length must be greater than or equal to #{min_length} characters"}
     end
@@ -107,49 +107,49 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "ab"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           required: true,
           max_length: max_length
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is nil" do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           max_length: 10
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is nil and the max length is 0" do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           max_length: 0
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is an empty string and the max length is 0" do
       data = %{"id" => ""}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           max_length: 0
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when length of field is more than max_length" do
@@ -158,13 +158,13 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "abcd"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           required: true,
           max_length: max_length
         }
       }
 
-      assert Litmus.validate(data, schema) ==
+      assert Joi.validate(data, schema) ==
                {:error, "#{field} length must be less than or equal to #{max_length} characters"}
     end
   end
@@ -175,13 +175,13 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "abc"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           required: true,
           length: length
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is an empty string and the length is 0" do
@@ -189,12 +189,12 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => ""}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           length: length
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :ok when the value is nil and the length is 0" do
@@ -202,12 +202,12 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           length: length
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when length of field is not equal to length" do
@@ -216,13 +216,13 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "abcd"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           required: true,
           length: length
         }
       }
 
-      assert Litmus.validate(data, schema) ==
+      assert Joi.validate(data, schema) ==
                {:error, "#{field} length must be #{length} characters"}
     end
 
@@ -232,12 +232,12 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           length: length
         }
       }
 
-      assert Litmus.validate(data, schema) ==
+      assert Joi.validate(data, schema) ==
                {:error, "#{field} length must be #{length} characters"}
     end
 
@@ -247,12 +247,12 @@ defmodule Litmus.Type.StringTest do
       data = %{"id" => "a"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           length: length
         }
       }
 
-      assert Litmus.validate(data, schema) ==
+      assert Joi.validate(data, schema) ==
                {:error, "#{field} length must be #{length} characters"}
     end
   end
@@ -262,30 +262,30 @@ defmodule Litmus.Type.StringTest do
       data = %{"username" => "user123"}
 
       schema = %{
-        "username" => %Litmus.Type.String{
-          regex: %Litmus.Type.String.Regex{
+        "username" => %Joi.Type.String{
+          regex: %Joi.Type.String.Regex{
             pattern: ~r/^[a-zA-Z0-9_]*$/,
             error_message: "username must be alphanumeric"
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors with custom error message when value does not match regex pattern" do
       data = %{"username" => "x@##1"}
 
       schema = %{
-        "username" => %Litmus.Type.String{
-          regex: %Litmus.Type.String.Regex{
+        "username" => %Joi.Type.String{
+          regex: %Joi.Type.String.Regex{
             pattern: ~r/^[a-zA-Z0-9_]*$/,
             error_message: "username must be alphanumeric"
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "username must be alphanumeric"}
+      assert Joi.validate(data, schema) == {:error, "username must be alphanumeric"}
     end
 
     test "errors with default error message when value does not match regex pattern" do
@@ -293,14 +293,14 @@ defmodule Litmus.Type.StringTest do
       field = "username"
 
       schema = %{
-        field => %Litmus.Type.String{
-          regex: %Litmus.Type.String.Regex{
+        field => %Joi.Type.String{
+          regex: %Joi.Type.String.Regex{
             pattern: ~r/^\d{3,}(?:[-\s]?\d*)?$/
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "#{field} must be in a valid format"}
+      assert Joi.validate(data, schema) == {:error, "#{field} must be in a valid format"}
     end
 
     test "errors when the value is nil" do
@@ -308,14 +308,14 @@ defmodule Litmus.Type.StringTest do
       field = "username"
 
       schema = %{
-        field => %Litmus.Type.String{
-          regex: %Litmus.Type.String.Regex{
+        field => %Joi.Type.String{
+          regex: %Joi.Type.String.Regex{
             pattern: ~r/^\d{3,}(?:[-\s]?\d*)?$/
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "#{field} must be in a valid format"}
+      assert Joi.validate(data, schema) == {:error, "#{field} must be in a valid format"}
     end
   end
 
@@ -325,36 +325,36 @@ defmodule Litmus.Type.StringTest do
       trimmed_data = %{"id" => "abc"}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           trim: true
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, trimmed_data}
+      assert Joi.validate(data, schema) == {:ok, trimmed_data}
     end
 
     test "returns :ok with same parameters when trim is set to false" do
       data = %{"id" => " abc "}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           trim: false
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "does not error when the value is nil" do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{
+        "id" => %Joi.Type.String{
           trim: true
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
   end
 
@@ -364,15 +364,15 @@ defmodule Litmus.Type.StringTest do
       modified_data = %{"username" => "anonymous"}
 
       schema = %{
-        "username" => %Litmus.Type.String{
-          replace: %Litmus.Type.String.Replace{
+        "username" => %Joi.Type.String{
+          replace: %Joi.Type.String.Replace{
             pattern: ~r/^user[0-9]*$/,
             replacement: "anonymous"
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
     end
 
     test "replaces multiple occurences of a regex within a string" do
@@ -380,15 +380,15 @@ defmodule Litmus.Type.StringTest do
       modified_data = %{"username" => "userXXX"}
 
       schema = %{
-        "username" => %Litmus.Type.String{
-          replace: %Litmus.Type.String.Replace{
+        "username" => %Joi.Type.String{
+          replace: %Joi.Type.String.Replace{
             pattern: ~r/[0-9]/,
             replacement: "X"
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
     end
 
     test "replaces multiple occurences of a string within a string" do
@@ -396,15 +396,15 @@ defmodule Litmus.Type.StringTest do
       modified_data = %{"username" => "userX1X"}
 
       schema = %{
-        "username" => %Litmus.Type.String{
-          replace: %Litmus.Type.String.Replace{
+        "username" => %Joi.Type.String{
+          replace: %Joi.Type.String.Replace{
             pattern: "2",
             replacement: "X"
           }
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
     end
 
     test "replaces a single occurences of a patten when global is false" do
@@ -412,8 +412,8 @@ defmodule Litmus.Type.StringTest do
       modified_data = %{"username" => "userX23"}
 
       schema = %{
-        "username" => %Litmus.Type.String{
-          replace: %Litmus.Type.String.Replace{
+        "username" => %Joi.Type.String{
+          replace: %Joi.Type.String.Replace{
             pattern: ~r/[0-9]/,
             replacement: "X",
             global: false
@@ -421,7 +421,7 @@ defmodule Litmus.Type.StringTest do
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
     end
   end
 
@@ -431,32 +431,32 @@ defmodule Litmus.Type.StringTest do
       modified_data = %{"id" => "1", "new_user" => "true"}
 
       schema = %{
-        "id" => %Litmus.Type.String{},
-        "new_user" => %Litmus.Type.String{},
-        "description" => %Litmus.Type.String{}
+        "id" => %Joi.Type.String{},
+        "new_user" => %Joi.Type.String{},
+        "description" => %Joi.Type.String{}
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
     end
 
     test "does not convert nil to a string" do
       data = %{"id" => nil}
 
       schema = %{
-        "id" => %Litmus.Type.String{}
+        "id" => %Joi.Type.String{}
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "returns :error when field is neither string nor boolean nor number" do
       data = %{"id" => ["1"]}
 
       schema = %{
-        "id" => %Litmus.Type.String{}
+        "id" => %Joi.Type.String{}
       }
 
-      assert Litmus.validate(data, schema) == {:error, "id must be a string"}
+      assert Joi.validate(data, schema) == {:error, "id must be a string"}
     end
   end
 end

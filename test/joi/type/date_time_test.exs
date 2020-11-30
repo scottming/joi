@@ -1,8 +1,8 @@
-defmodule Litmus.Type.DateTimeTest do
+defmodule Joi.Type.DateTimeTest do
   use ExUnit.Case, async: true
-  doctest Litmus.Type.DateTime
+  doctest Joi.Type.DateTime
 
-  alias Litmus.Type
+  alias Joi.Type
 
   @field "start_date"
 

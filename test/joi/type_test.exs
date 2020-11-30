@@ -1,7 +1,7 @@
-defmodule Litmus.TypeTest do
+defmodule Joi.TypeTest do
   use ExUnit.Case, async: true
 
-  alias Litmus.Type
+  alias Joi.Type
 
   describe "Type.validate/3" do
     test "validates data through Type module for Any type" do

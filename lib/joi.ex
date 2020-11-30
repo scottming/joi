@@ -1,19 +1,19 @@
-defmodule Litmus do
+defmodule Joi do
   @moduledoc """
-  Litmus is a data validation library for Elixir.
+  Joi is a data validation library for Elixir.
   """
 
-  alias Litmus.Type
+  alias Joi.Type
 
   @doc """
   Validates and converts data based on a schema.
 
   ## Examples
 
-      iex> Litmus.validate(%{"id" => "123"}, %{"id" => %Litmus.Type.Number{}})
+      iex> Joi.validate(%{"id" => "123"}, %{"id" => %Joi.Type.Number{}})
       {:ok, %{"id" => 123}}
 
-      iex> Litmus.validate(%{"id" => "asdf"}, %{"id" => %Litmus.Type.Number{}})
+      iex> Joi.validate(%{"id" => "asdf"}, %{"id" => %Joi.Type.Number{}})
       {:error, "id must be a number"}
 
   """

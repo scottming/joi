@@ -1,4 +1,4 @@
-defmodule Litmus.Required do
+defmodule Joi.Required do
   @moduledoc false
 
   @spec validate(map, term, map) :: {:ok | :ok_not_present, map} | {:error, String.t()}

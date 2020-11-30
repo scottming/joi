@@ -1,4 +1,4 @@
-defmodule Litmus.Type.List do
+defmodule Joi.Type.List do
   @moduledoc """
   This type validates that a value is list.
 
@@ -31,36 +31,36 @@ defmodule Litmus.Type.List do
   ## Examples
 
       iex> schema = %{
-      ...>   "ids" => %Litmus.Type.List{
+      ...>   "ids" => %Joi.Type.List{
       ...>     min_length: 1,
       ...>     max_length: 5,
       ...>     type: :number
       ...>   }
       ...> }
-      iex> Litmus.validate(%{"ids" => [1, 2]}, schema)
+      iex> Joi.validate(%{"ids" => [1, 2]}, schema)
       {:ok, %{"ids" => [1, 2]}}
-      iex> Litmus.validate(%{"ids" => [1, "a"]}, schema)
+      iex> Joi.validate(%{"ids" => [1, "a"]}, schema)
       {:error, "ids must be a list of numbers"}
 
       iex> schema = %{
-      ...>   "ids" => %Litmus.Type.List{
+      ...>   "ids" => %Joi.Type.List{
       ...>     default: []
       ...>   }
       ...> }
-      iex> Litmus.validate(%{}, schema)
+      iex> Joi.validate(%{}, schema)
       {:ok, %{"ids" => []}}
 
   """
 
-  alias Litmus.{Default, Required}
-  alias Litmus.Type
+  alias Joi.{Default, Required}
+  alias Joi.Type
 
   defstruct [
     :min_length,
     :max_length,
     :length,
     :type,
-    default: Litmus.Type.Any.NoDefault,
+    default: Joi.Type.Any.NoDefault,
     required: false,
     unique: false
   ]
@@ -222,8 +222,8 @@ defmodule Litmus.Type.List do
     end
   end
 
-  defimpl Litmus.Type do
-    alias Litmus.Type
+  defimpl Joi.Type do
+    alias Joi.Type
 
     @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
     def validate(type, field, data), do: Type.List.validate_field(type, field, data)

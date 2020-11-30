@@ -1,4 +1,4 @@
-defmodule Litmus.Type.Any do
+defmodule Joi.Type.Any do
   @moduledoc """
   This type provides validation for any type of value.
 
@@ -14,27 +14,27 @@ defmodule Litmus.Type.Any do
 
   ## Examples
 
-      iex> schema = %{"id" => %Litmus.Type.Any{required: true}}
-      iex> Litmus.validate(%{"id" => 1}, schema)
+      iex> schema = %{"id" => %Joi.Type.Any{required: true}}
+      iex> Joi.validate(%{"id" => 1}, schema)
       {:ok, %{"id" => 1}}
 
-      iex> schema = %{"id" => %Litmus.Type.Any{default: "new_id"}}
-      iex> Litmus.validate(%{}, schema)
+      iex> schema = %{"id" => %Joi.Type.Any{default: "new_id"}}
+      iex> Joi.validate(%{}, schema)
       {:ok, %{"id" => "new_id"}}
 
-      iex> schema = %{"id" => %Litmus.Type.Any{required: true}}
-      iex> Litmus.validate(%{}, schema)
+      iex> schema = %{"id" => %Joi.Type.Any{required: true}}
+      iex> Joi.validate(%{}, schema)
       {:error, "id is required"}
 
-      iex> schema = %{"id" => %Litmus.Type.Any{required: true}}
-      iex> Litmus.validate(%{"id" => nil}, schema)
+      iex> schema = %{"id" => %Joi.Type.Any{required: true}}
+      iex> Joi.validate(%{"id" => nil}, schema)
       {:error, "id is required"}
 
   """
 
-  alias Litmus.{Default, Required}
+  alias Joi.{Default, Required}
 
-  defstruct default: Litmus.Type.Any.NoDefault,
+  defstruct default: Joi.Type.Any.NoDefault,
             required: false
 
   @type t :: %__MODULE__{
@@ -51,8 +51,8 @@ defmodule Litmus.Type.Any do
     end
   end
 
-  defimpl Litmus.Type do
-    alias Litmus.Type
+  defimpl Joi.Type do
+    alias Joi.Type
 
     @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
     def validate(type, field, data), do: Type.Any.validate_field(type, field, data)

@@ -1,4 +1,4 @@
-defmodule Litmus.Type.String.Replace do
+defmodule Joi.Type.String.Replace do
   @moduledoc false
 
   defstruct [

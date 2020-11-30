@@ -1,8 +1,8 @@
-defmodule Litmus.Type.AnyTest do
+defmodule Joi.Type.AnyTest do
   use ExUnit.Case, async: true
-  doctest Litmus.Type.Any
+  doctest Joi.Type.Any
 
-  alias Litmus.Type
+  alias Joi.Type
 
   describe "validate_field/3" do
     test "validates property values of data based on their Any schema definition in Type.Any module" do

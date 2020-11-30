@@ -1,4 +1,4 @@
-defmodule Litmus.Type.String do
+defmodule Joi.Type.String do
   @moduledoc """
   This type validates and converts values to strings It converts boolean and
   number values to strings.
@@ -19,13 +19,13 @@ defmodule Litmus.Type.String do
       string. Allowed values are non-negative integers.
 
     * `:regex` - Specifies a Regular expression that a string must match. Use
-      the `Litmus.Type.String.Regex` struct with the options:
+      the `Joi.Type.String.Regex` struct with the options:
 
       * `:pattern` - A `Regex.t()` to match
       * `:error_message` - An error message to use when the pattern does not match
 
     * `:replace` - Replaces occurences of a pattern with a string. Use the
-      `Litmus.Type.String.Replace` struct with the options:
+      `Joi.Type.String.Replace` struct with the options:
 
       * `:pattern` - A `Regex.t()`, `String.t()`, or compiled pattern to match
       * `:replacement` - A `String.t()` to replace
@@ -42,54 +42,54 @@ defmodule Litmus.Type.String do
   ## Examples
 
       iex> schema = %{
-      ...>   "username" => %Litmus.Type.String{
+      ...>   "username" => %Joi.Type.String{
       ...>     min_length: 3,
       ...>     max_length: 10,
       ...>     trim: true
       ...>   },
-      ...>   "password" => %Litmus.Type.String{
+      ...>   "password" => %Joi.Type.String{
       ...>     length: 6,
-      ...>     regex: %Litmus.Type.String.Regex{
+      ...>     regex: %Joi.Type.String.Regex{
       ...>       pattern: ~r/^[a-zA-Z0-9_]*$/,
       ...>       error_message: "password must be alphanumeric"
       ...>     }
       ...>   }
       ...> }
       iex> params = %{"username" => " user123 ", "password" => "root01"}
-      iex> Litmus.validate(params, schema)
+      iex> Joi.validate(params, schema)
       {:ok, %{"username" => "user123", "password" => "root01"}}
-      iex> Litmus.validate(%{"password" => "ro!_@1"}, schema)
+      iex> Joi.validate(%{"password" => "ro!_@1"}, schema)
       {:error, "password must be alphanumeric"}
 
       iex> schema = %{
-      ...>   "username" => %Litmus.Type.String{
-      ...>     replace: %Litmus.Type.String.Replace{
+      ...>   "username" => %Joi.Type.String{
+      ...>     replace: %Joi.Type.String.Replace{
       ...>       pattern: ~r/\_/,
       ...>       replacement: ""
       ...>     }
       ...>   }
       ...> }
-      iex> Litmus.validate(%{"username" => "one_two_three"}, schema)
+      iex> Joi.validate(%{"username" => "one_two_three"}, schema)
       {:ok, %{"username" => "onetwothree"}}
 
       iex> schema = %{
-      ...>   "username" => %Litmus.Type.String{
+      ...>   "username" => %Joi.Type.String{
       ...>     default: "anonymous"
       ...>   }
       ...> }
-      iex> Litmus.validate(%{}, schema)
+      iex> Joi.validate(%{}, schema)
       {:ok, %{"username" => "anonymous"}}
 
   """
 
-  alias Litmus.{Default, Required}
-  alias Litmus.Type
+  alias Joi.{Default, Required}
+  alias Joi.Type
 
   defstruct [
     :min_length,
     :max_length,
     :length,
-    default: Litmus.Type.Any.NoDefault,
+    default: Joi.Type.Any.NoDefault,
     regex: %Type.String.Regex{},
     replace: %Type.String.Replace{},
     trim: false,
@@ -231,8 +231,8 @@ defmodule Litmus.Type.String do
     {:ok, params}
   end
 
-  defimpl Litmus.Type do
-    alias Litmus.Type
+  defimpl Joi.Type do
+    alias Joi.Type
 
     @spec validate(Type.t(), term, map) :: {:ok, map} | {:error, String.t()}
     def validate(type, field, data), do: Type.String.validate_field(type, field, data)

@@ -1,8 +1,8 @@
-defmodule Litmus.Type.BooleanTest do
+defmodule Joi.Type.BooleanTest do
   use ExUnit.Case, async: true
-  doctest Litmus.Type.Boolean
+  doctest Joi.Type.Boolean
 
-  alias Litmus.Type
+  alias Joi.Type
 
   describe "validate_field/3" do
     test "validates Type.Boolean fields in a schema" do
@@ -44,14 +44,14 @@ defmodule Litmus.Type.BooleanTest do
       modified_data = %{"id_given" => true}
 
       schema = %{
-        "id_given" => %Litmus.Type.Boolean{
+        "id_given" => %Joi.Type.Boolean{
           truthy: [1, "One"]
         },
-        "new_user" => %Litmus.Type.Boolean{}
+        "new_user" => %Joi.Type.Boolean{}
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
-      assert Litmus.validate(case_data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(case_data, schema) == {:ok, modified_data}
     end
 
     test "errors when field is not in additional truthy values that are considered to be valid booleans" do
@@ -59,12 +59,12 @@ defmodule Litmus.Type.BooleanTest do
       data = %{"id_given" => "1"}
 
       schema = %{
-        "id_given" => %Litmus.Type.Boolean{
+        "id_given" => %Joi.Type.Boolean{
           truthy: [1]
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "#{field} must be a boolean"}
+      assert Joi.validate(data, schema) == {:error, "#{field} must be a boolean"}
     end
   end
 
@@ -74,12 +74,12 @@ defmodule Litmus.Type.BooleanTest do
       modified_data = %{"id_given" => false}
 
       schema = %{
-        "id_given" => %Litmus.Type.Boolean{
+        "id_given" => %Joi.Type.Boolean{
           falsy: [0]
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, modified_data}
+      assert Joi.validate(data, schema) == {:ok, modified_data}
     end
 
     test "errors when field is not in additional falsy values that are considered to be valid booleans" do
@@ -87,12 +87,12 @@ defmodule Litmus.Type.BooleanTest do
       data = %{"id_given" => "0"}
 
       schema = %{
-        "id_given" => %Litmus.Type.Boolean{
+        "id_given" => %Joi.Type.Boolean{
           falsy: [0]
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "#{field} must be a boolean"}
+      assert Joi.validate(data, schema) == {:error, "#{field} must be a boolean"}
     end
   end
 end

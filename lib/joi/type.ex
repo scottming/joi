@@ -1,7 +1,7 @@
-defprotocol Litmus.Type do
+defprotocol Joi.Type do
   @moduledoc false
 
-  alias Litmus.Type
+  alias Joi.Type
 
   @type t ::
           Type.Any.t()

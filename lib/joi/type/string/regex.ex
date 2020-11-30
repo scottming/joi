@@ -1,4 +1,4 @@
-defmodule Litmus.Type.String.Regex do
+defmodule Joi.Type.String.Regex do
   @moduledoc false
 
   defstruct [:pattern, :error_message]

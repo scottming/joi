@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :litmus, key: :value
+#     config :joi, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:litmus, :key)
+#     Application.get_env(:joi, :key)
 #
 # You can also configure a 3rd-party app:
 #

@@ -1,8 +1,8 @@
-defmodule Litmus.Type.NumberTest do
+defmodule Joi.Type.NumberTest do
   use ExUnit.Case, async: true
-  doctest Litmus.Type.Number
+  doctest Joi.Type.Number
 
-  alias Litmus.Type
+  alias Joi.Type
 
   describe "validate_field/3" do
     test "validates Type.Number fields in a schema" do
@@ -36,11 +36,11 @@ defmodule Litmus.Type.NumberTest do
       modified_integer_data = %{"id" => 6}
 
       schema = %{
-        "id" => %Litmus.Type.Number{}
+        "id" => %Joi.Type.Number{}
       }
 
-      assert Litmus.validate(integer_data, schema) == {:ok, modified_integer_data}
-      assert Litmus.validate(float_data, schema) == {:ok, modified_float_data}
+      assert Joi.validate(integer_data, schema) == {:ok, modified_integer_data}
+      assert Joi.validate(float_data, schema) == {:ok, modified_float_data}
     end
 
     test "errors if field type is neither number or stringified number" do
@@ -48,11 +48,11 @@ defmodule Litmus.Type.NumberTest do
       boolean_data = %{"id" => true}
 
       schema = %{
-        "id" => %Litmus.Type.Number{}
+        "id" => %Joi.Type.Number{}
       }
 
-      assert Litmus.validate(invalid_number, schema) == {:error, "id must be a number"}
-      assert Litmus.validate(boolean_data, schema) == {:error, "id must be a number"}
+      assert Joi.validate(invalid_number, schema) == {:error, "id must be a number"}
+      assert Joi.validate(boolean_data, schema) == {:error, "id must be a number"}
     end
 
     test "does not convert nil to a number" do
@@ -70,26 +70,26 @@ defmodule Litmus.Type.NumberTest do
       data = %{"id" => 6}
 
       schema = %{
-        "id" => %Litmus.Type.Number{
+        "id" => %Joi.Type.Number{
           required: true,
           min: 3
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when field is less than min" do
       data = %{"id" => 1}
 
       schema = %{
-        "id" => %Litmus.Type.Number{
+        "id" => %Joi.Type.Number{
           required: true,
           min: 3
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "id must be greater than or equal to 3"}
+      assert Joi.validate(data, schema) == {:error, "id must be greater than or equal to 3"}
     end
   end
 
@@ -98,26 +98,26 @@ defmodule Litmus.Type.NumberTest do
       data = %{"id" => 1}
 
       schema = %{
-        "id" => %Litmus.Type.Number{
+        "id" => %Joi.Type.Number{
           required: true,
           max: 3
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when field is more than max" do
       data = %{"id" => 6}
 
       schema = %{
-        "id" => %Litmus.Type.Number{
+        "id" => %Joi.Type.Number{
           required: true,
           max: 3
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "id must be less than or equal to 3"}
+      assert Joi.validate(data, schema) == {:error, "id must be less than or equal to 3"}
     end
   end
 
@@ -126,26 +126,26 @@ defmodule Litmus.Type.NumberTest do
       data = %{"id" => 1}
 
       schema = %{
-        "id" => %Litmus.Type.Number{
+        "id" => %Joi.Type.Number{
           required: true,
           integer: true
         }
       }
 
-      assert Litmus.validate(data, schema) == {:ok, data}
+      assert Joi.validate(data, schema) == {:ok, data}
     end
 
     test "errors when field is a float and the schema property integer is set to true" do
       data = %{"id" => 1.6}
 
       schema = %{
-        "id" => %Litmus.Type.Number{
+        "id" => %Joi.Type.Number{
           required: true,
           integer: true
         }
       }
 
-      assert Litmus.validate(data, schema) == {:error, "id must be an integer"}
+      assert Joi.validate(data, schema) == {:error, "id must be an integer"}
     end
   end
 end

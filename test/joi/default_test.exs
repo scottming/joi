@@ -1,8 +1,8 @@
-defmodule Litmus.DefaultTest do
+defmodule Joi.DefaultTest do
   use ExUnit.Case, async: true
 
-  alias Litmus.Default
-  alias Litmus.Type
+  alias Joi.Default
+  alias Joi.Type
 
   describe "validate/3" do
     test "returns params with default value populated if field not present" do
