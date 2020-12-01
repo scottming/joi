@@ -18,7 +18,7 @@ defmodule Joi do
   # end
 
   def validate(data, schema) do
-      data |> Map.put(:joi_errors, []) |> validate_all_fields(schema) |> parse_result()
+    data |> Map.put(:joi_errors, []) |> validate_all_fields(schema) |> parse_result()
   end
 
   def validate_all_fields(data, schema) do
@@ -37,7 +37,7 @@ defmodule Joi do
     {:ok, data} = result
 
     case data.joi_errors do
-      [] -> {:ok, data}
+      [] -> {:ok, Map.drop(data, [:joi_errors])}
       errors -> {:error, errors}
     end
   end
