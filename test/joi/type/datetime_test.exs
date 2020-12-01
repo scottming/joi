@@ -3,7 +3,7 @@ defmodule Joi.Type.DateTimeTest do
 
   alias Joi.Type
 
-  @field "start_date"
+  @field "start_datetime"
 
   describe "validate_field/3" do
     test "converts a string to a datetime" do
@@ -39,7 +39,7 @@ defmodule Joi.Type.DateTimeTest do
       options = []
 
       assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error, "start_date is required"}
+               {:error, "start_datetime is required"}
     end
 
     test "errors when the value is not a string" do
@@ -48,7 +48,7 @@ defmodule Joi.Type.DateTimeTest do
       options = []
 
       assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error, "start_date must be a valid ISO-8601 datetime"}
+               {:error, "start_datetime must be a valid ISO-8601 datetime"}
     end
 
     test "errors when the value is not in an ISO-8601 datetime with timezone format" do
@@ -57,7 +57,7 @@ defmodule Joi.Type.DateTimeTest do
       options = []
 
       assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error, "start_date must be a valid ISO-8601 datetime"}
+               {:error, "start_datetime must be a valid ISO-8601 datetime"}
     end
 
     test "does not error if the field is not provided and not required" do
