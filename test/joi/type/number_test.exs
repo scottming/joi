@@ -68,8 +68,8 @@ defmodule Joi.Type.NumberTest do
         id: [:number]
       }
 
-      assert Joi.validate(invalid_number, schema) == {:error, "id must be a number"}
-      assert Joi.validate(boolean_data, schema) == {:error, "id must be a number"}
+      assert Joi.validate(invalid_number, schema) == {:error, ["id must be a number"]}
+      assert Joi.validate(boolean_data, schema) == {:error, ["id must be a number"]}
     end
 
     @tag :unit
@@ -101,7 +101,7 @@ defmodule Joi.Type.NumberTest do
         id: [:number, min: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, "id must be greater than or equal to 3"}
+      assert Joi.validate(data, schema) == {:error, ["id must be greater than or equal to 3"]}
     end
   end
 
@@ -123,7 +123,7 @@ defmodule Joi.Type.NumberTest do
         id: [:number, max: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, "id must be less than or equal to 3"}
+      assert Joi.validate(data, schema) == {:error, ["id must be less than or equal to 3"]}
     end
   end
 
@@ -145,7 +145,7 @@ defmodule Joi.Type.NumberTest do
         id: [:number]
       }
 
-      assert Joi.validate(data, schema) == {:error, "id must be an integer"}
+      assert Joi.validate(data, schema) == {:error, ["id must be an integer"]}
     end
   end
 end

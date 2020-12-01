@@ -51,7 +51,7 @@ defmodule Joi.Type.BooleanTest do
         "id_given" => [:boolean, truthy: [1]]
       }
 
-      assert Joi.validate(data, schema) == {:error, "#{field} must be a boolean"}
+      assert Joi.validate(data, schema) == {:error, ["#{field} must be a boolean"]}
     end
   end
 
@@ -75,7 +75,7 @@ defmodule Joi.Type.BooleanTest do
         "id_given" => [:boolean, falsy: [0]]
       }
 
-      assert Joi.validate(data, schema) == {:error, "#{field} must be a boolean"}
+      assert Joi.validate(data, schema) == {:error, ["#{field} must be a boolean"]}
     end
   end
 end

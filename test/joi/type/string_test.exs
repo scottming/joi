@@ -55,7 +55,7 @@ defmodule Joi.Type.StringTest do
 
       assert Joi.validate(data, schema) ==
                {:error,
-                "#{field} length must be greater than or equal to #{min_length} characters"}
+                ["#{field} length must be greater than or equal to #{min_length} characters"]}
     end
 
     test "errors when value is blank and min_length is greater than 0" do
@@ -69,7 +69,7 @@ defmodule Joi.Type.StringTest do
 
       assert Joi.validate(data, schema) ==
                {:error,
-                "#{field} length must be greater than or equal to #{min_length} characters"}
+                ["#{field} length must be greater than or equal to #{min_length} characters"]}
     end
 
     test "does not error if the field is not provided and not required" do
@@ -135,7 +135,7 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error, "#{field} length must be less than or equal to #{max_length} characters"}
+               {:error, ["#{field} length must be less than or equal to #{max_length} characters"]}
     end
 
     test "errors when length is more than 255" do
@@ -144,7 +144,7 @@ defmodule Joi.Type.StringTest do
       schema = %{desc: [:string]}
 
       assert Joi.validate(data, schema) ==
-               {:error, "#{field} length must be less than or equal to 255 characters"}
+               {:error, ["#{field} length must be less than or equal to 255 characters"]}
     end
   end
 
@@ -192,7 +192,7 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error, "#{field} length must be #{length} characters"}
+               {:error, ["#{field} length must be #{length} characters"]}
     end
 
     test "errors when the value is blank and length is greater than 0" do
@@ -205,7 +205,7 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error, "#{field} length must be #{length} characters"}
+               {:error, ["#{field} length must be #{length} characters"]}
     end
 
     test "errors when the length is 0 and the value is not empty or nil" do
@@ -242,7 +242,7 @@ defmodule Joi.Type.StringTest do
         username: [:string, regex: ~r/^[a-zA-Z0-9_]*$/]
       }
 
-      assert Joi.validate(data, schema) == {:error, "#{field} must be in a valid format"}
+      assert Joi.validate(data, schema) == {:error, ["#{field} must be in a valid format"]}
     end
 
     test "errors when the value is nil" do
@@ -253,7 +253,7 @@ defmodule Joi.Type.StringTest do
         field => [:string, regex: ~r/^\d{3,}(?:[-\s]?\d*)?$/]
       }
 
-      assert Joi.validate(data, schema) == {:error, "#{field} must be in a valid format"}
+      assert Joi.validate(data, schema) == {:error, ["#{field} must be in a valid format"]}
     end
   end
 
@@ -270,7 +270,7 @@ defmodule Joi.Type.StringTest do
       data = %{id: "12345"}
       schema = %{id: [:string, uuid: true]}
 
-      assert Joi.validate(data, schema) == {:error, "#{field} is not a valid uuid"}
+      assert Joi.validate(data, schema) == {:error, ["#{field} is not a valid uuid"]}
     end
   end
 

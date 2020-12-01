@@ -39,7 +39,7 @@ defmodule Joi.Type.ListTest do
     test "errors if field is not a list" do
       data = %{id: "1, 2, 3"}
       schema = %{id: [:list]}
-      assert Joi.validate(data, schema) == {:error, "id must be a list"}
+      assert Joi.validate(data, schema) == {:error, ["id must be a list"]}
     end
   end
 
@@ -61,7 +61,7 @@ defmodule Joi.Type.ListTest do
         id: [:list, type: :number, min_length: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, "id must not be below length of 3"}
+      assert Joi.validate(data, schema) == {:error, ["id must not be below length of 3"]}
     end
   end
 
@@ -83,7 +83,7 @@ defmodule Joi.Type.ListTest do
         id: [:list, type: :number, max_length: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, "id must not exceed length of 3"}
+      assert Joi.validate(data, schema) == {:error, ["id must not exceed length of 3"]}
     end
   end
 
@@ -105,7 +105,7 @@ defmodule Joi.Type.ListTest do
         id: [:list, type: :number, length: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, "id length must be of 3 length"}
+      assert Joi.validate(data, schema) == {:error, ["id length must be of 3 length"]}
     end
   end
 
@@ -148,10 +148,10 @@ defmodule Joi.Type.ListTest do
       schema_number = %{id: [:list, type: :number]}
       schema_string = %{id: [:list, type: :string]}
 
-      assert Joi.validate(data, schema_atom) == {:error, "id must be a list of atoms"}
-      assert Joi.validate(data, schema_boolean) == {:error, "id must be a list of boolean"}
-      assert Joi.validate(data, schema_number) == {:error, "id must be a list of numbers"}
-      assert Joi.validate(data, schema_string) == {:error, "id must be a list of strings"}
+      assert Joi.validate(data, schema_atom) == {:error, ["id must be a list of atoms"]}
+      assert Joi.validate(data, schema_boolean) == {:error, ["id must be a list of boolean"]}
+      assert Joi.validate(data, schema_number) == {:error, ["id must be a list of numbers"]}
+      assert Joi.validate(data, schema_string) == {:error, ["id must be a list of strings"]}
     end
   end
 end
