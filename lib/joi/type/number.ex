@@ -1,11 +1,19 @@
 defmodule Joi.Type.Number do
   import Joi.Validator.Skipping
 
-  @default_options [integer: true, required: true]
+  @default_options [
+    required: true,
+    integer: true,
+    min: nil,
+    max: nil
+  ]
+
+  def validate_field(field, params, options) when is_list(options) do
+    options = Keyword.merge(@default_options, options) |> Enum.into(%{})
+    validate_field(field, params, options)
+  end
 
   def validate_field(field, params, options) do
-    options = Keyword.merge(@default_options, options)
-
     unless_skipping(field, params, options) do
       with {:ok, params} <- convert(field, params, options),
            {:ok, params} <- integer_validate(field, params, options),
@@ -60,18 +68,11 @@ defmodule Joi.Type.Number do
     end
   end
 
-  defp integer_validate(field, params, options) when is_list(options) do
-    case Keyword.get(options, :integer) do
-      false -> integer_validate(field, params, false)
-      _ -> integer_validate(field, params, true)
-    end
-  end
-
-  defp integer_validate(_field, params, false) do
+  defp integer_validate(_field, params, %{integer: false}) do
     {:ok, params}
   end
 
-  defp integer_validate(field, params, true) do
+  defp integer_validate(field, params, %{integer: true}) do
     if is_integer(params[field]) do
       {:ok, params}
     else
@@ -79,17 +80,11 @@ defmodule Joi.Type.Number do
     end
   end
 
-  defp min_validate(field, params, options) when is_list(options) do
-    min = Keyword.get(options, :min)
-
-    case is_number(min) do
-      true -> min_validate(field, params, min)
-      # when nil or not number
-      false -> {:ok, params}
-    end
+  defp min_validate(_field, params, %{min: nil}) do
+    {:ok, params}
   end
 
-  defp min_validate(field, params, min) do
+  defp min_validate(field, params, %{min: min}) when is_number(min) do
     if params[field] < min do
       {:error, "#{field} must be greater than or equal to #{min}"}
     else
@@ -97,17 +92,11 @@ defmodule Joi.Type.Number do
     end
   end
 
-  defp max_validate(field, params, options) when is_list(options) do
-    max = Keyword.get(options, :max)
-
-    case is_number(max) do
-      true -> max_validate(field, params, max)
-      # when nil or not number
-      false -> {:ok, params}
-    end
+  defp max_validate(_field, params, %{max: nil}) do
+    {:ok, params}
   end
 
-  defp max_validate(field, params, max) do
+  defp max_validate(field, params, %{max: max}) when is_number(max) do
     if params[field] > max do
       {:error, "#{field} must be less than or equal to #{max}"}
     else
