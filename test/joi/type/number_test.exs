@@ -148,16 +148,4 @@ defmodule Joi.Type.NumberTest do
       assert Joi.validate(data, schema) == {:error, ["id must be an integer"]}
     end
   end
-
-  describe "custom functions with number type" do
-    field = :id
-    data = %{id: 2}
-    expected_data = %{id: 6}
-
-    f1 = fn field, x -> {:ok, %{x | field => x[field] + 1}} end
-    f2 = fn field, x -> {:ok, %{x | field => x[field] * 2}} end
-
-    schema = %{id: [:number, f: f1, f: f2]}
-    assert Joi.validate(data, schema) == {:ok, expected_data}
-  end
 end

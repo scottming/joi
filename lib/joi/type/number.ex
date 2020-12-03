@@ -1,5 +1,5 @@
 defmodule Joi.Type.Number do
-  import Joi.Validator.{Skipping, Custom}
+  import Joi.Validator.Skipping
 
   @default_options [
     required: true,
@@ -9,15 +9,8 @@ defmodule Joi.Type.Number do
   ]
 
   def validate_field(field, params, options) when is_list(options) do
-    fs = options |> Keyword.take([:f])
-    options = Keyword.merge(@default_options, options) |> Keyword.drop([:f]) |> Enum.into(%{})
-
-    with {:ok, data} <- validate_field(field, params, options) do
-      case fs != [] do
-        true -> custom_validate(field, data, fs)
-        false -> {:ok, data}
-      end
-    end
+    options = Keyword.merge(@default_options, options) |> Enum.into(%{})
+    validate_field(field, params, options)
   end
 
   def validate_field(field, params, options) do
