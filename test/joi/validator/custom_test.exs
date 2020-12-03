@@ -3,7 +3,7 @@ defmodule Joi.Validator.CustomTest do
   alias Joi.Validator.Custom
 
   describe "validate_field/3" do
-    test "when single function in the function_list" do
+    test "success: when single function in the function_list" do
       field = :username
       data = %{username: "scott"}
       expected_data = %{username: "SCOTT"}
@@ -11,7 +11,7 @@ defmodule Joi.Validator.CustomTest do
       assert Custom.validate_field(field, data, [f]) == {:ok, expected_data}
     end
 
-    test "when multiple functions" do
+    test "success: when multiple functions" do
       field = :id
       data = %{id: 2}
       expected_data = %{id: 6}
@@ -24,7 +24,7 @@ defmodule Joi.Validator.CustomTest do
   end
 
   describe "Joi.validate/2" do
-    test "multiple custom functions and multiple fields" do
+    test "success: multiple custom functions and multiple fields" do
       data = %{id: 2, username: "scott"}
       expected_data = %{id: 6, username: "SCOTT"}
 
@@ -34,6 +34,36 @@ defmodule Joi.Validator.CustomTest do
       schema = %{id: [:number, f: f1, f: f2], username: [:string, f: f3]}
 
       assert Joi.validate(data, schema) == {:ok, expected_data}
+    end
+
+    defp custom_function(field, x, options \\ []) do
+      case is_list(x[field]) and x[field] |> Enum.uniq() == x[field] do
+        true ->
+          {:ok, x}
+
+        false ->
+          if message = Keyword.get(options, :message) do
+            {:error, message}
+          else
+            {:error, "#{x[field]} must be uniq"}
+          end
+      end
+    end
+
+    test "error: custom function with empty options" do
+      data = %{l: [1, 2, 2]}
+      expected = "#{data[:l]} must be uniq"
+      schema = %{l: [:list, type: :number, f: &custom_function/2]}
+
+      assert Joi.validate(data, schema) == {:error, [expected]}
+    end
+
+    test "error: custom function with options" do
+      data = %{l: [1, 2, 2]}
+      expected = "uniq_error"
+      schema = %{l: [:list, type: :number, f: &custom_function(&1, &2, message: "uniq_error")]}
+
+      assert Joi.validate(data, schema) == {:error, [expected]}
     end
   end
 end
