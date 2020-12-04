@@ -1,6 +1,7 @@
 defmodule Joi.Type.DateTime do
   @moduledoc false
   import Joi.Validator.Skipping
+  import Joi.Util
 
   @default_options [
     required: true
@@ -12,7 +13,7 @@ defmodule Joi.Type.DateTime do
   end
 
   def validate_field(field, data, options) do
-    unless_skipping(field, data, options) do
+    unless_skipping(:datetime, field, data, options) do
       with {:ok, data} <- convert(field, data, options) do
         {:ok, data}
       end
@@ -42,6 +43,6 @@ defmodule Joi.Type.DateTime do
   defp datetime?(_), do: false
 
   defp error_tuple(field) do
-    {:error, "#{field} must be a valid ISO-8601 datetime"}
+    error_message(field, "#{field} must be a valid ISO-8601 datetime", "datetime")
   end
 end

@@ -2,6 +2,7 @@ defmodule Joi.Type.String do
   @moduledoc false
 
   import Joi.Validator.Skipping
+  import Joi.Util
 
   @default_options [
     required: true,
@@ -18,7 +19,7 @@ defmodule Joi.Type.String do
   end
 
   def validate_field(field, params, options) do
-    unless_skipping(field, params, options) do
+    unless_skipping(:string, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
            {:ok, params} <- min_length_validate(field, params, options),
            {:ok, params} <- max_length_validate(field, params, options),
@@ -43,14 +44,19 @@ defmodule Joi.Type.String do
         {:ok, Map.update!(params, field, &to_string/1)}
 
       true ->
-        {:error, "#{field} must be a string"}
+        error_message(field, "#{field} must be a string", "string")
     end
   end
 
   defp min_length_validate(field, params, %{min_length: min_length})
        when is_integer(min_length) and min_length > 0 do
     if params[field] == nil or String.length(params[field]) < min_length do
-      {:error, "#{field} length must be greater than or equal to #{min_length} characters"}
+      error_message(
+        field,
+        "#{field} length must be greater than or equal to #{min_length} characters",
+        "string.min_length",
+        min_length
+      )
     else
       {:ok, params}
     end
@@ -67,7 +73,12 @@ defmodule Joi.Type.String do
   defp max_length_validate(field, params, %{max_length: max_length})
        when is_integer(max_length) and max_length >= 0 do
     if Map.get(params, field) && String.length(params[field]) > max_length do
-      {:error, "#{field} length must be less than or equal to #{max_length} characters"}
+      error_message(
+        field,
+        "#{field} length must be less than or equal to #{max_length} characters",
+        "string.max_length",
+        max_length
+      )
     else
       {:ok, params}
     end
@@ -75,7 +86,12 @@ defmodule Joi.Type.String do
 
   defp length_validate(field, params, %{length: length}) when is_integer(length) and length > 0 do
     if params[field] == nil || String.length(params[field]) != length do
-      {:error, "#{field} length must be #{length} characters"}
+      error_message(
+        field,
+        "#{field} length must be #{length} characters",
+        "string.length",
+        length
+      )
     else
       {:ok, params}
     end
@@ -91,7 +107,7 @@ defmodule Joi.Type.String do
 
   defp regex_validate(field, params, %{regex: regex}) do
     if params[field] == nil or !Regex.match?(regex, params[field]) do
-      {:error, "#{field} must be in a valid format"}
+      error_message(field, "#{field} must be in a valid format", "string.regex", regex)
     else
       {:ok, params}
     end
@@ -99,8 +115,11 @@ defmodule Joi.Type.String do
 
   defp uuid_validate(field, params, %{uuid: true}) do
     case UUID.info(params[field]) do
-      {:ok, _} -> {:ok, params}
-      _ -> {:error, "#{field} is not a valid uuid"}
+      {:ok, _} ->
+        {:ok, params}
+
+      _ ->
+        error_message(field, "#{field} is not a valid uuid", "string.uuid", true)
     end
   end
 

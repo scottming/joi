@@ -11,6 +11,7 @@ defmodule Joi.Type.Boolean do
   ]
 
   import Joi.Validator.Skipping
+  import Joi.Util
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -18,7 +19,7 @@ defmodule Joi.Type.Boolean do
   end
 
   def validate_field(field, data, options) do
-    unless_skipping(field, data, options) do
+    unless_skipping(:boolean, field, data, options) do
       with {:ok, data} <- truthy_falsy_validate(field, data, options) do
         {:ok, data}
       end
@@ -56,7 +57,7 @@ defmodule Joi.Type.Boolean do
         {:ok, Map.replace!(params, field, false)}
 
       true ->
-        {:error, "#{field} must be a boolean"}
+        error_message(field, "#{field} must be a boolean", "boolean")
     end
   end
 end

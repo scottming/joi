@@ -1,5 +1,6 @@
 defmodule Joi.Type.Date do
   import Joi.Validator.Skipping
+  import Joi.Util
 
   @default_options [
     required: true
@@ -11,7 +12,7 @@ defmodule Joi.Type.Date do
   end
 
   def validate_field(field, params, options) do
-    unless_skipping(field, params, options) do
+    unless_skipping(:date, field, params, options) do
       case convert(field, params, options) do
         {:ok, params} -> {:ok, params}
         other -> other
@@ -43,6 +44,6 @@ defmodule Joi.Type.Date do
   defp date?(_), do: false
 
   defp error_tuple(field) do
-    {:error, "#{field} must be a valid ISO-8601 date"}
+    error_message(field, "#{field} must be a valid ISO-8601 date", "date")
   end
 end

@@ -2,6 +2,7 @@ defmodule Joi.Type.BooleanTest do
   use ExUnit.Case, async: true
 
   alias Joi.Type
+  import Joi.Support.Util
 
   describe "validate_field/3" do
     test "validates Type.Boolean fields in a schema" do
@@ -51,7 +52,8 @@ defmodule Joi.Type.BooleanTest do
         "id_given" => [:boolean, truthy: [1]]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["#{field} must be a boolean"]}
+      assert Joi.validate(data, schema) ==
+               error_messages(schema, field, "#{field} must be a boolean")
     end
   end
 
@@ -75,7 +77,8 @@ defmodule Joi.Type.BooleanTest do
         "id_given" => [:boolean, falsy: [0]]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["#{field} must be a boolean"]}
+      assert Joi.validate(data, schema) ==
+               error_messages(schema, field, "#{field} must be a boolean")
     end
   end
 end

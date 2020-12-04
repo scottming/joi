@@ -18,7 +18,11 @@ defmodule Joi.Type.NumberTest do
     @tag :unit
     test "error: when field is nil" do
       data = %{}
-      expected_error = {:error, "id is required"}
+
+      expected_error =
+        {:error,
+         %{constraint: true, field: :id, message: "id is required", type: "number.required"}}
+
 
       field = :id
       schema = %{id: [:number]}

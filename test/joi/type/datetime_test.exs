@@ -39,7 +39,13 @@ defmodule Joi.Type.DateTimeTest do
       options = []
 
       assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error, "start_datetime is required"}
+               {:error,
+                %{
+                  constraint: true,
+                  field: "start_datetime",
+                  message: "start_datetime is required",
+                  type: "datetime.required"
+                }}
     end
 
     test "errors when the value is not a string" do
@@ -48,7 +54,13 @@ defmodule Joi.Type.DateTimeTest do
       options = []
 
       assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error, "start_datetime must be a valid ISO-8601 datetime"}
+               {:error,
+                %{
+                  field: @field,
+                  message: "start_datetime must be a valid ISO-8601 datetime",
+                  type: "datetime",
+                  constraint: "datetime"
+                }}
     end
 
     test "errors when the value is not in an ISO-8601 datetime with timezone format" do
@@ -57,7 +69,13 @@ defmodule Joi.Type.DateTimeTest do
       options = []
 
       assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error, "start_datetime must be a valid ISO-8601 datetime"}
+               {:error,
+                %{
+                  field: @field,
+                  message: "start_datetime must be a valid ISO-8601 datetime",
+                  type: "datetime",
+                  constraint: "datetime"
+                }}
     end
 
     test "does not error if the field is not provided and not required" do

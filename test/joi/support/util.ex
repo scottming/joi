@@ -3,7 +3,11 @@ defmodule Joi.Support.Util do
     field_schema = Map.get(schema, field)
     [h | options] = field_schema
     constraint = Keyword.get(options, child_key)
-    constraint = if is_atom(constraint), do: Atom.to_string(constraint), else: constraint
+
+    constraint =
+      if is_atom(constraint) and not is_boolean(constraint),
+        do: Atom.to_string(constraint),
+        else: constraint
 
     type = Atom.to_string(h) <> "." <> Atom.to_string(child_key)
     {:error, [%{field: field, message: message, type: type, constraint: constraint}]}

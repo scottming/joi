@@ -15,7 +15,7 @@ defmodule Joi.Type.Number do
   end
 
   def validate_field(field, params, options) do
-    unless_skipping(field, params, options) do
+    unless_skipping(:number, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
            {:ok, params} <- integer_validate(field, params, options),
            {:ok, params} <- min_validate(field, params, options),

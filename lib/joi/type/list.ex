@@ -17,7 +17,7 @@ defmodule Joi.Type.List do
   end
 
   def validate_field(field, params, options) do
-    unless_skipping(field, params, options) do
+    unless_skipping(:list, field, params, options) do
       with {:ok, params} <- validate_list(field, params),
            {:ok, params} <- type_validate(field, params, options),
            {:ok, params} <- min_length_validate(field, params, options),

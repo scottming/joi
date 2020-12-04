@@ -1,5 +1,7 @@
 defmodule Joi.Validator.Skipping do
-  defmacro unless_skipping(field, params, options, do: unskipped) do
+  import Joi.Util
+
+  defmacro unless_skipping(type, field, params, options, do: unskipped) do
     quote do
       cond do
         skip?(unquote(options)) ->
@@ -9,12 +11,13 @@ defmodule Joi.Validator.Skipping do
           unquote(unskipped)
 
         true ->
-          {:error, "#{unquote(field)} is required"}
+          full_type = Atom.to_string(unquote(type)) <> "." <> "required"
+          error_message(unquote(field), "#{unquote(field)} is required", full_type, true)
       end
     end
   end
 
-  def skip?(options) when is_list(options)do
+  def skip?(options) when is_list(options) do
     Keyword.get(options, :required) == false
   end
 

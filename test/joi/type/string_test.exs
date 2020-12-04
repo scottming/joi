@@ -1,6 +1,7 @@
 defmodule Joi.Type.StringTest do
   use ExUnit.Case, async: true
   alias Joi.Type
+  import Joi.Support.Util
 
   describe "validate_field/3" do
     test "validates property values of data based on their String schema definition in Type.String module" do
@@ -54,8 +55,12 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error,
-                ["#{field} length must be greater than or equal to #{min_length} characters"]}
+               error_messages(
+                 schema,
+                 field,
+                 "#{field} length must be greater than or equal to #{min_length} characters",
+                 :min_length
+               )
     end
 
     test "errors when value is blank and min_length is greater than 0" do
@@ -68,8 +73,12 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error,
-                ["#{field} length must be greater than or equal to #{min_length} characters"]}
+               error_messages(
+                 schema,
+                 field,
+                 "#{field} length must be greater than or equal to #{min_length} characters",
+                 :min_length
+               )
     end
 
     test "does not error if the field is not provided and not required" do
@@ -135,16 +144,30 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error, ["#{field} length must be less than or equal to #{max_length} characters"]}
+               error_messages(
+                 schema,
+                 field,
+                 "#{field} length must be less than or equal to #{max_length} characters",
+                 :max_length
+               )
     end
 
     test "errors when length is more than 255" do
       field = :desc
       data = %{desc: string_of_length(256)}
       schema = %{desc: [:string]}
+      max_length = 255
+
+      # the default options is [max_length: 255]
+      merged_schema = %{desc: [:string, max_length: 255]}
 
       assert Joi.validate(data, schema) ==
-               {:error, ["#{field} length must be less than or equal to 255 characters"]}
+               error_messages(
+                 merged_schema,
+                 field,
+                 "#{field} length must be less than or equal to #{max_length} characters",
+                 :max_length
+               )
     end
   end
 
@@ -192,7 +215,12 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error, ["#{field} length must be #{length} characters"]}
+               error_messages(
+                 schema,
+                 field,
+                 "#{field} length must be #{length} characters",
+                 :length
+               )
     end
 
     test "errors when the value is blank and length is greater than 0" do
@@ -205,7 +233,12 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               {:error, ["#{field} length must be #{length} characters"]}
+               error_messages(
+                 schema,
+                 field,
+                 "#{field} length must be #{length} characters",
+                 :length
+               )
     end
 
     test "errors when the length is 0 and the value is not empty or nil" do
@@ -242,7 +275,8 @@ defmodule Joi.Type.StringTest do
         username: [:string, regex: ~r/^[a-zA-Z0-9_]*$/]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["#{field} must be in a valid format"]}
+      assert Joi.validate(data, schema) ==
+               error_messages(schema, field, "#{field} must be in a valid format", :regex)
     end
 
     test "errors when the value is nil" do
@@ -253,7 +287,8 @@ defmodule Joi.Type.StringTest do
         field => [:string, regex: ~r/^\d{3,}(?:[-\s]?\d*)?$/]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["#{field} must be in a valid format"]}
+      assert Joi.validate(data, schema) ==
+               error_messages(schema, field, "#{field} must be in a valid format", :regex)
     end
   end
 
@@ -270,7 +305,8 @@ defmodule Joi.Type.StringTest do
       data = %{id: "12345"}
       schema = %{id: [:string, uuid: true]}
 
-      assert Joi.validate(data, schema) == {:error, ["#{field} is not a valid uuid"]}
+      assert Joi.validate(data, schema) ==
+               error_messages(schema, field, "#{field} is not a valid uuid", :uuid)
     end
   end
 
