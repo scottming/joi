@@ -23,7 +23,6 @@ defmodule Joi.Type.NumberTest do
         {:error,
          %{constraint: true, field: :id, message: "id is required", type: "number.required"}}
 
-
       field = :id
       schema = %{id: [:number]}
       [_type | options] = schema[field]
