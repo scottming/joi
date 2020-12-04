@@ -68,8 +68,27 @@ defmodule Joi.Type.NumberTest do
         id: [:number]
       }
 
-      assert Joi.validate(invalid_number, schema) == {:error, ["id must be a number"]}
-      assert Joi.validate(boolean_data, schema) == {:error, ["id must be a number"]}
+      assert Joi.validate(invalid_number, schema) ==
+               {:error,
+                [
+                  %{
+                    constraint: "number",
+                    field: :id,
+                    message: "id must be a number",
+                    type: "number"
+                  }
+                ]}
+
+      assert Joi.validate(boolean_data, schema) ==
+               {:error,
+                [
+                  %{
+                    constraint: "number",
+                    field: :id,
+                    message: "id must be a number",
+                    type: "number"
+                  }
+                ]}
     end
 
     @tag :unit
@@ -101,7 +120,16 @@ defmodule Joi.Type.NumberTest do
         id: [:number, min: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["id must be greater than or equal to 3"]}
+      assert Joi.validate(data, schema) ==
+               {:error,
+                [
+                  %{
+                    constraint: 3,
+                    field: :id,
+                    message: "id must be greater than or equal to 3",
+                    type: "number.min"
+                  }
+                ]}
     end
   end
 
@@ -123,7 +151,16 @@ defmodule Joi.Type.NumberTest do
         id: [:number, max: 3]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["id must be less than or equal to 3"]}
+      assert Joi.validate(data, schema) ==
+               {:error,
+                [
+                  %{
+                    constraint: 3,
+                    field: :id,
+                    message: "id must be less than or equal to 3",
+                    type: "number.max"
+                  }
+                ]}
     end
   end
 
@@ -145,7 +182,16 @@ defmodule Joi.Type.NumberTest do
         id: [:number]
       }
 
-      assert Joi.validate(data, schema) == {:error, ["id must be an integer"]}
+      assert Joi.validate(data, schema) ==
+               {:error,
+                [
+                  %{
+                    constraint: true,
+                    field: :id,
+                    message: "id must be an integer",
+                    type: "number.integer"
+                  }
+                ]}
     end
   end
 end

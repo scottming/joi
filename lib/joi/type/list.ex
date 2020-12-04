@@ -1,6 +1,7 @@
 defmodule Joi.Type.List do
   @moduledoc false
   import Joi.Validator.Skipping
+  import Joi.Util
 
   @default_options [
     required: true,
@@ -36,7 +37,7 @@ defmodule Joi.Type.List do
         {:ok, params}
 
       true ->
-        {:error, "#{field} must be a list"}
+        error_message(field, "#{field} must be a list", "list")
     end
   end
 
@@ -54,7 +55,7 @@ defmodule Joi.Type.List do
     if Enum.all?(params[field], &is_atom/1) do
       {:ok, params}
     else
-      {:error, "#{field} must be a list of atoms"}
+      error_message(field, "#{field} must be a list of atoms", "list.type", "atom")
     end
   end
 
@@ -62,7 +63,7 @@ defmodule Joi.Type.List do
     if Enum.all?(params[field], &is_boolean/1) do
       {:ok, params}
     else
-      {:error, "#{field} must be a list of boolean"}
+      error_message(field, "#{field} must be a list of boolean", "list.type", "boolean")
     end
   end
 
@@ -70,7 +71,7 @@ defmodule Joi.Type.List do
     if Enum.all?(params[field], &is_number/1) do
       {:ok, params}
     else
-      {:error, "#{field} must be a list of numbers"}
+      error_message(field, "#{field} must be a list of numbers", "list.type", "number")
     end
   end
 
@@ -78,7 +79,7 @@ defmodule Joi.Type.List do
     if Enum.all?(params[field], &is_binary/1) do
       {:ok, params}
     else
-      {:error, "#{field} must be a list of strings"}
+      error_message(field, "#{field} must be a list of strings", "list.type", "string")
     end
   end
 
@@ -89,7 +90,12 @@ defmodule Joi.Type.List do
   defp min_length_validate(field, params, %{min_length: min_length})
        when is_integer(min_length) and min_length >= 0 do
     if length(params[field]) < min_length do
-      {:error, "#{field} must not be below length of #{min_length}"}
+      error_message(
+        field,
+        "#{field} must not be below length of #{min_length}",
+        "list.min_length",
+        min_length
+      )
     else
       {:ok, params}
     end
@@ -102,7 +108,12 @@ defmodule Joi.Type.List do
   defp max_length_validate(field, params, %{max_length: max_length})
        when is_integer(max_length) and max_length >= 0 do
     if length(params[field]) > max_length do
-      {:error, "#{field} must not exceed length of #{max_length}"}
+      error_message(
+        field,
+        "#{field} must not exceed length of #{max_length}",
+        "list.max_length",
+        max_length
+      )
     else
       {:ok, params}
     end
@@ -115,7 +126,7 @@ defmodule Joi.Type.List do
   defp length_validate(field, params, %{length: length})
        when is_integer(length) and length >= 0 do
     if length(params[field]) != length do
-      {:error, "#{field} length must be of #{length} length"}
+      error_message(field, "#{field} length must be of #{length} length", "list.length", length)
     else
       {:ok, params}
     end

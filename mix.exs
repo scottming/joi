@@ -27,7 +27,7 @@ defmodule Joi.MixProject do
       ],
       package: [
         files: ~w(mix.exs lib LICENSE* README.md CHANGELOG.md),
-        maintainers: ["Lob"],
+        maintainers: ["Lob", "ScottMing"],
         licenses: ["MIT"],
         links: %{
           "GitHub" => @github_url
@@ -40,9 +40,13 @@ defmodule Joi.MixProject do
         coveralls: :test,
         "coveralls.travis": :test,
         "coveralls.html": :test
-      ]
+      ],
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/joi/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
