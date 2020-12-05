@@ -24,7 +24,7 @@ defmodule Joi.Type do
     custom_functions = Keyword.values(fs) |> Enum.filter(&is_function/1)
 
     if Keyword.get(options, :required) == false and is_nil(data[field]) do
-      {:ok, data} |> IO.inspect(label: "result")
+      {:ok, data}
     else
       Custom.validate_field(field, data, custom_functions)
     end
