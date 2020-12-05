@@ -65,5 +65,19 @@ defmodule Joi.Validator.CustomTest do
 
       assert Joi.validate(data, schema) == {:error, [expected]}
     end
+
+    test "success: custom function will called when data[field] exist" do
+      data = %{id: 1}
+      f = fn field, x -> {:ok, %{x | field => x[field] * 2}} end
+      schema = %{id: [:number, required: false, f: f]}
+      assert Joi.validate(data, schema) == {:ok, %{id: 2}}
+    end
+
+    test "success: custom function will not be called when data[field] isn't exist" do
+      data = %{id: 1}
+      f = fn field, x -> {:ok, %{x | field => x[field] * 2}} end
+      schema = %{false_id: [:number, required: false, f: f]}
+      assert Joi.validate(data, schema) == {:ok, %{id: 1}}
+    end
   end
 end

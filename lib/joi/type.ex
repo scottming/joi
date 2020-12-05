@@ -17,15 +17,20 @@ defmodule Joi.Type do
       type == :date -> Type.Date.validate_field(field, data, options)
       type -> {:error, "unknown type: #{type}"}
     end
-    |> custom_validate(field, custom_function_list)
+    |> custom_validate(field, custom_function_list, options)
   end
 
-  defp custom_validate({:ok, data}, field, fs) do
+  defp custom_validate({:ok, data}, field, fs, options) do
     custom_functions = Keyword.values(fs) |> Enum.filter(&is_function/1)
-    Custom.validate_field(field, data, custom_functions)
+
+    if Keyword.get(options, :required) == false and is_nil(data[field]) do
+      {:ok, data} |> IO.inspect(label: "result")
+    else
+      Custom.validate_field(field, data, custom_functions)
+    end
   end
 
-  defp custom_validate(other, _, _) do
+  defp custom_validate(other, _, _, _options) do
     other
   end
 end
