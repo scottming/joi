@@ -6,7 +6,7 @@ defmodule Joi.MixProject do
   def project do
     [
       app: :joi,
-      version: "0.1.3",
+      version: "0.1.4",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -58,7 +58,7 @@ defmodule Joi.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:uuid, "~> 1.1"},
+      {:elixir_uuid, "~> 1.2"},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.11", only: :test},
