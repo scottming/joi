@@ -30,9 +30,9 @@ schema = %{
   remember_me: [:boolean, required: false]
 }
 
-params = %{id: "c8ce4d74-fab8-44fc-90c2-736b8d27aa30", username: "user@123", pin: 1234, new_user: "1", account_ids: [1, 3, 9]}
+data = %{id: "c8ce4d74-fab8-44fc-90c2-736b8d27aa30", username: "user@123", pin: 1234, new_user: "1", account_ids: [1, 3, 9]}
 
-Joi.validate(params, schema)
+Joi.validate(data, schema)
 # {:ok,
 # %{
 #   account_ids: [1, 3, 9],
