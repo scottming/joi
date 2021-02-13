@@ -1,5 +1,9 @@
 # Joi
 
+[![Hex.pm](https://img.shields.io/hexpm/v/joi.svg)](https://hex.pm/packages/joi)
+[![Build Docs](https://img.shields.io/badge/hexdocs-release-blue.svg)](https://hexdocs.pm/joi/readme.html)
+[![Build Status](https://travis-ci.com/scottming/joi.svg?branch=master)](https://travis-ci.com/scottming/joi)
+
 
 This project is inspired by [sideway/joi](https://github.com/sideway/joi) and [lob/litmus](https://github.com/lob/litmus).
 
@@ -131,4 +135,4 @@ Joi.validate(data, schema)
 
 Feel free to dive in! [Open an issue](https://github.com/scottming/joi/issues/new) or submit PRS.
 
-Joi follows the [Contributor Covenant] Code of Conduct.
+Joi follows the [Contributor Covenant](https://www.contributor-covenant.org/version/1/3/0/code-of-conduct/) Code of Conduct.
