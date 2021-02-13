@@ -1,6 +1,22 @@
 # Joi
 
-This project is a fork of [lob/litmus](https://github.com/lob/litmus)
+
+This project is inspired by [sideway/joi](https://github.com/sideway/joi) and [lob/litmus](https://github.com/lob/litmus).
+
+And the code of this repository is based on [lob/litmus](https://github.com/lob/litmus), but the API of this repository is completely different from litmus.
+
+## Backgroud
+
+The community already has a lot of verification-related libraries, such as skooma, vex, but why write a new one?
+
+The api of vex is very much like Rails ActiveModel Validations, and it feels too complex for me, especially when it comes to customizing some validation modules, which is not convenient and flexible enough. Skooma, on the other hand, is very flexible and I find it particularly useful when validating non-map data structures.
+
+So the **goal** of this repository is:
+
+1. Support most of the types supported by the native [sideway](joi)
+2. Nested validation support.
+3. Be easily internationalizable
+4. Easy to extend
 
 ## Installation
 
@@ -72,7 +88,7 @@ Joi.validate(%{}, schema)
 #  ]}
 ```
 
-## Supported Types
+### Supported Types
 
 * `boolean`
 * `date`  
@@ -81,7 +97,7 @@ Joi.validate(%{}, schema)
 * `number`
 * `string`
 
-## Custom functions
+### Custom functions
 
 There is nothing magical about custom functions, you just need to return the same format as Joi's type, and then use `:f` as the key for the custom function in the schema, so you can use one or more custom functions inside a type.
 
@@ -109,3 +125,10 @@ Joi.validate(data, schema)
 #   }
 # ]}
 ```
+
+
+## Contributing
+
+Feel free to dive in! [Open an issue](https://github.com/scottming/joi/issues/new) or submit PRS.
+
+Joi follows the [Contributor Covenant] Code of Conduct.
