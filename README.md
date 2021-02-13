@@ -19,7 +19,7 @@ So the **goal** of this repository is:
 
 1. Support most of the types supported by the native [sideway/joi](https://github.com/sideway/joi)
 2. Nested validation support.
-3. Be easily internationalizable
+3. Easy internationalization
 4. Easy to extend
 
 ## Installation
@@ -34,9 +34,9 @@ end
 
 ## Usage
 
-Joi validates data against a predefined schema with the `Joi.vlaidate/2` function.
+Joi validates data against a predefined schema with the `Joi.validate/2` function.
 
-If the data is valid, the funciton returns `{:ok, data}`. The returned data will perform the transformation according to the provided schema.
+If the data is valid, the function returns `{:ok, data}`. The returned data will perform the transformation according to the provided schema.
 
 if the passed data does not match the type defined in the schema, the function returns `{:error, %{field: field, message: message, type: type, constraint: constraint}}`, When a field is received that is not specified in the provided schema, it does nothing and returns `{:ok, data}`.
 
