@@ -9,7 +9,7 @@ This project is inspired by [sideway/joi](https://github.com/sideway/joi) and [l
 
 And the code of this repository is based on [lob/litmus](https://github.com/lob/litmus), but the API of this repository is completely different from litmus.
 
-## Backgroud
+## Background
 
 The community already has a lot of verification-related libraries, such as skooma, vex, but why write a new one?
 
