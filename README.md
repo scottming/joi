@@ -17,7 +17,7 @@ The api of vex is very much like Rails ActiveModel Validations, and it feels too
 
 So the **goal** of this repository is:
 
-1. Support most of the types supported by the native [sideway](joi)
+1. Support most of the types supported by the native [sideway/joi](https://github.com/sideway/joi)
 2. Nested validation support.
 3. Be easily internationalizable
 4. Easy to extend
