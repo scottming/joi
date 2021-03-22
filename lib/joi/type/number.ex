@@ -1,6 +1,7 @@
 defmodule Joi.Type.Number do
   import Joi.Validator.Skipping
   import Joi.Util
+  alias Joi.Validator.Inclusion
 
   @default_options [
     required: true,
@@ -17,6 +18,7 @@ defmodule Joi.Type.Number do
   def validate_field(field, params, options) do
     unless_skipping(:number, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
+           {:ok, params} <- Inclusion.validate_field(:number, field, params, options),
            {:ok, params} <- integer_validate(field, params, options),
            {:ok, params} <- min_validate(field, params, options),
            {:ok, params} <-
@@ -41,7 +43,7 @@ defmodule Joi.Type.Number do
         {:ok, Map.put(params, field, modified_value)}
 
       true ->
-        error_message(field,  params, "#{field} must be a number", "number")
+        error_message(field, params, "#{field} must be a number", "number")
     end
   end
 
@@ -77,7 +79,7 @@ defmodule Joi.Type.Number do
     if is_integer(params[field]) do
       {:ok, params}
     else
-      error_message(field,  params, "#{field} must be an integer", "number.integer", true)
+      error_message(field, params, "#{field} must be an integer", "number.integer", true)
     end
   end
 
@@ -87,7 +89,13 @@ defmodule Joi.Type.Number do
 
   defp min_validate(field, params, %{min: min}) when is_number(min) do
     if params[field] < min do
-      error_message(field,  params, "#{field} must be greater than or equal to #{min}", "number.min", min)
+      error_message(
+        field,
+        params,
+        "#{field} must be greater than or equal to #{min}",
+        "number.min",
+        min
+      )
     else
       {:ok, params}
     end
@@ -99,7 +107,13 @@ defmodule Joi.Type.Number do
 
   defp max_validate(field, params, %{max: max}) when is_number(max) do
     if params[field] > max do
-      error_message(field,  params, "#{field} must be less than or equal to #{max}", "number.max", max)
+      error_message(
+        field,
+        params,
+        "#{field} must be less than or equal to #{max}",
+        "number.max",
+        max
+      )
     else
       {:ok, params}
     end
