@@ -28,14 +28,14 @@ defmodule Joi.Type.Date do
       is_binary(params[field]) ->
         case Date.from_iso8601(params[field]) do
           {:ok, date} -> {:ok, %{params | field => date}}
-          _ -> error_tuple(field)
+          _ -> error_tuple(field, params)
         end
 
       date?(params[field]) ->
         {:ok, params}
 
       true ->
-        error_tuple(field)
+        error_tuple(field, params)
     end
   end
 
@@ -43,7 +43,7 @@ defmodule Joi.Type.Date do
 
   defp date?(_), do: false
 
-  defp error_tuple(field) do
-    error_message(field, "#{field} must be a valid ISO-8601 date", "date")
+  defp error_tuple(field, params) do
+    error_message(field,  params, "#{field} must be a valid ISO-8601 date", "date")
   end
 end

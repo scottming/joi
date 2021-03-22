@@ -12,7 +12,14 @@ defmodule Joi.Validator.Skipping do
 
         true ->
           full_type = Atom.to_string(unquote(type)) <> "." <> "required"
-          error_message(unquote(field), "#{unquote(field)} is required", full_type, true)
+
+          error_message(
+            unquote(field),
+            unquote(params),
+            "#{unquote(field)} is required",
+            full_type,
+            true
+          )
       end
     end
   end

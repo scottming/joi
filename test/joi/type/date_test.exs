@@ -37,6 +37,7 @@ defmodule Joi.Type.DateTest do
                 %{
                   constraint: true,
                   field: "start_date",
+                  value: data[@field],
                   message: "start_date is required",
                   type: "date.required"
                 }}
@@ -51,6 +52,7 @@ defmodule Joi.Type.DateTest do
                {:error,
                 %{
                   constraint: "date",
+                  value: data[@field],
                   field: @field,
                   message: "start_date must be a valid ISO-8601 date",
                   type: "date"
@@ -66,6 +68,7 @@ defmodule Joi.Type.DateTest do
                {:error,
                 %{
                   constraint: "date",
+                  value: data[@field],
                   field: @field,
                   message: "start_date must be a valid ISO-8601 date",
                   type: "date"

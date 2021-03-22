@@ -1,11 +1,11 @@
 defmodule Joi.Util do
   @types [:boolean, :date, :datetime, :list, :map, :number, :string]
-  def error_message(field, message, type) do
-    {:error, %{field: field, message: message, type: type, constraint: type}}
+  def error_message(field, params, message, type) do
+    {:error, %{field: field, value: params[field], message: message, type: type, constraint: type}}
   end
 
-  def error_message(field, message, type, constraint) do
-    {:error, %{field: field, message: message, type: type, constraint: constraint}}
+  def error_message(field, params, message, type, constraint) do
+    {:error, %{field: field, value: params[field], message: message, type: type, constraint: constraint}}
   end
 
   def is_schema(schema) when is_map(schema) do

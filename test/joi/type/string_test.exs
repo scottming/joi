@@ -58,6 +58,7 @@ defmodule Joi.Type.StringTest do
                error_messages(
                  schema,
                  field,
+                 data,
                  "#{field} length must be greater than or equal to #{min_length} characters",
                  :min_length
                )
@@ -76,6 +77,7 @@ defmodule Joi.Type.StringTest do
                error_messages(
                  schema,
                  field,
+                 data,
                  "#{field} length must be greater than or equal to #{min_length} characters",
                  :min_length
                )
@@ -147,6 +149,7 @@ defmodule Joi.Type.StringTest do
                error_messages(
                  schema,
                  field,
+                 data,
                  "#{field} length must be less than or equal to #{max_length} characters",
                  :max_length
                )
@@ -165,6 +168,7 @@ defmodule Joi.Type.StringTest do
                error_messages(
                  merged_schema,
                  field,
+                 data,
                  "#{field} length must be less than or equal to #{max_length} characters",
                  :max_length
                )
@@ -218,6 +222,7 @@ defmodule Joi.Type.StringTest do
                error_messages(
                  schema,
                  field,
+                 data,
                  "#{field} length must be #{length} characters",
                  :length
                )
@@ -236,6 +241,7 @@ defmodule Joi.Type.StringTest do
                error_messages(
                  schema,
                  field,
+                 data,
                  "#{field} length must be #{length} characters",
                  :length
                )
@@ -276,7 +282,7 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "#{field} must be in a valid format", :regex)
+               error_messages(schema, field, data, "#{field} must be in a valid format", :regex)
     end
 
     test "errors when the value is nil" do
@@ -288,7 +294,7 @@ defmodule Joi.Type.StringTest do
       }
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "#{field} must be in a valid format", :regex)
+               error_messages(schema, field, data, "#{field} must be in a valid format", :regex)
     end
   end
 
@@ -306,150 +312,10 @@ defmodule Joi.Type.StringTest do
       schema = %{id: [:string, uuid: true]}
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "#{field} is not a valid uuid", :uuid)
+               error_messages(schema, field, data, "#{field} is not a valid uuid", :uuid)
     end
   end
 
-  # describe "trim extra whitespaces" do
-  #   test "returns :ok with new parameters having trimmed values when trim is set to true" do
-  #     data = %{id: " abc "}
-  #     trimmed_data = %{id: "abc"}
-
-  #     schema = %{
-  #       id: [:string
-  #         trim: true
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, trimmed_data}
-  #   end
-
-  #   test "returns :ok with same parameters when trim is set to false" do
-  #     data = %{id: " abc "}
-
-  #     schema = %{
-  #       id: [:string
-  #         trim: false
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, data}
-  #   end
-
-  #   test "does not error when the value is nil" do
-  #     data = %{id: nil}
-
-  #     schema = %{
-  #       id: [:string
-  #         trim: true
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, data}
-  #   end
-  # end
-
-  # describe "replace" do
-  #   test "replaces a pattern in a string with a new string" do
-  #     data = %{"username" => "user123"}
-  #     modified_data = %{"username" => "anonymous"}
-
-  #     schema = %{
-  #       "username" => [:string
-  #         replace: %Joi.Type.String.Replace{
-  #           pattern: ~r/^user[0-9]*$/,
-  #           replacement: "anonymous"
-  #         }
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, modified_data}
-  #   end
-
-  #   test "replaces multiple occurences of a regex within a string" do
-  #     data = %{"username" => "user123"}
-  #     modified_data = %{"username" => "userXXX"}
-
-  #     schema = %{
-  #       "username" => [:string
-  #         replace: %Joi.Type.String.Replace{
-  #           pattern: ~r/[0-9]/,
-  #           replacement: "X"
-  #         }
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, modified_data}
-  #   end
-
-  #   test "replaces multiple occurences of a string within a string" do
-  #     data = %{"username" => "user212"}
-  #     modified_data = %{"username" => "userX1X"}
-
-  #     schema = %{
-  #       "username" => [:string
-  #         replace: %Joi.Type.String.Replace{
-  #           pattern: "2",
-  #           replacement: "X"
-  #         }
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, modified_data}
-  #   end
-
-  #   test "replaces a single occurences of a patten when global is false" do
-  #     data = %{"username" => "user123"}
-  #     modified_data = %{"username" => "userX23"}
-
-  #     schema = %{
-  #       "username" => [:string
-  #         replace: %Joi.Type.String.Replace{
-  #           pattern: ~r/[0-9]/,
-  #           replacement: "X",
-  #           global: false
-  #         }
-  #       }
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, modified_data}
-  #   end
-  # end
-
-  # describe "convert to string" do
-  #   test "returns :ok with new parameters having values converted to string when field is boolean or number" do
-  #     data = %{id: 1, "new_user" => true}
-  #     modified_data = %{id: "1", "new_user" => "true"}
-
-  #     schema = %{
-  #       id: [:string},
-  #       "new_user" => [:string},
-  #       "description" => [:string}
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, modified_data}
-  #   end
-
-  #   test "does not convert nil to a string" do
-  #     data = %{id: nil}
-
-  #     schema = %{
-  #       id: [:string}
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:ok, data}
-  #   end
-
-  #   test "returns :error when field is neither string nor boolean nor number" do
-  #     data = %{id: ["1"]}
-
-  #     schema = %{
-  #       id: [:string}
-  #     }
-
-  #     assert Joi.validate(data, schema) == {:error, "id must be a string"}
-  #   end
-  # end
   @chars "ABCDEFGHIJKLMNOPQRSTUVWXYZ" |> String.split("", trim: true)
 
   def string_of_length(length) do

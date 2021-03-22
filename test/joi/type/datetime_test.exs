@@ -43,6 +43,7 @@ defmodule Joi.Type.DateTimeTest do
                 %{
                   constraint: true,
                   field: "start_datetime",
+                  value: data[@field],
                   message: "start_datetime is required",
                   type: "datetime.required"
                 }}
@@ -57,6 +58,7 @@ defmodule Joi.Type.DateTimeTest do
                {:error,
                 %{
                   field: @field,
+                  value: data[@field],
                   message: "start_datetime must be a valid ISO-8601 datetime",
                   type: "datetime",
                   constraint: "datetime"
@@ -72,6 +74,7 @@ defmodule Joi.Type.DateTimeTest do
                {:error,
                 %{
                   field: @field,
+                  value: data[@field],
                   message: "start_datetime must be a valid ISO-8601 datetime",
                   type: "datetime",
                   constraint: "datetime"

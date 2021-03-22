@@ -9,13 +9,14 @@ defmodule Joi.Type do
     options = options |> Keyword.drop([:f])
 
     cond do
+      type == :atom -> Type.Atom.validate_field(field, data, options)
       type == :number -> Type.Number.validate_field(field, data, options)
       type == :string -> Type.String.validate_field(field, data, options)
       type == :list -> Type.List.validate_field(field, data, options)
       type == :boolean -> Type.Boolean.validate_field(field, data, options)
       type == :datetime -> Type.DateTime.validate_field(field, data, options)
       type == :date -> Type.Date.validate_field(field, data, options)
-      type == :map -> Type.Map.validate_field(field, data, options)
+      # type == :map -> Type.Map.validate_field(field, data, options)
       type -> {:error, "unknown type: #{type}"}
     end
     |> custom_validate(field, custom_function_list, options)

@@ -21,7 +21,13 @@ defmodule Joi.Type.NumberTest do
 
       expected_error =
         {:error,
-         %{constraint: true, field: :id, message: "id is required", type: "number.required"}}
+         %{
+           constraint: true,
+           field: :id,
+           value: nil,
+           message: "id is required",
+           type: "number.required"
+         }}
 
       field = :id
       schema = %{id: [:number]}
@@ -77,6 +83,7 @@ defmodule Joi.Type.NumberTest do
                   %{
                     constraint: "number",
                     field: :id,
+                    value: invalid_number[:id],
                     message: "id must be a number",
                     type: "number"
                   }
@@ -88,6 +95,7 @@ defmodule Joi.Type.NumberTest do
                   %{
                     constraint: "number",
                     field: :id,
+                    value: boolean_data[:id],
                     message: "id must be a number",
                     type: "number"
                   }
@@ -129,6 +137,7 @@ defmodule Joi.Type.NumberTest do
                   %{
                     constraint: 3,
                     field: :id,
+                    value: data[:id],
                     message: "id must be greater than or equal to 3",
                     type: "number.min"
                   }
@@ -160,6 +169,7 @@ defmodule Joi.Type.NumberTest do
                   %{
                     constraint: 3,
                     field: :id,
+                    value: data[:id],
                     message: "id must be less than or equal to 3",
                     type: "number.max"
                   }
@@ -191,6 +201,7 @@ defmodule Joi.Type.NumberTest do
                   %{
                     constraint: true,
                     field: :id,
+                    value: data[:id],
                     message: "id must be an integer",
                     type: "number.integer"
                   }

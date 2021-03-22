@@ -44,7 +44,7 @@ defmodule Joi.Type.String do
         {:ok, Map.update!(params, field, &to_string/1)}
 
       true ->
-        error_message(field, "#{field} must be a string", "string")
+        error_message(field, params, "#{field} must be a string", "string")
     end
   end
 
@@ -53,6 +53,7 @@ defmodule Joi.Type.String do
     if params[field] == nil or String.length(params[field]) < min_length do
       error_message(
         field,
+        params,
         "#{field} length must be greater than or equal to #{min_length} characters",
         "string.min_length",
         min_length
@@ -75,6 +76,7 @@ defmodule Joi.Type.String do
     if Map.get(params, field) && String.length(params[field]) > max_length do
       error_message(
         field,
+        params,
         "#{field} length must be less than or equal to #{max_length} characters",
         "string.max_length",
         max_length
@@ -88,6 +90,7 @@ defmodule Joi.Type.String do
     if params[field] == nil || String.length(params[field]) != length do
       error_message(
         field,
+        params,
         "#{field} length must be #{length} characters",
         "string.length",
         length
@@ -107,7 +110,7 @@ defmodule Joi.Type.String do
 
   defp regex_validate(field, params, %{regex: regex}) do
     if params[field] == nil or !Regex.match?(regex, params[field]) do
-      error_message(field, "#{field} must be in a valid format", "string.regex", regex)
+      error_message(field, params, "#{field} must be in a valid format", "string.regex", regex)
     else
       {:ok, params}
     end
@@ -119,7 +122,7 @@ defmodule Joi.Type.String do
         {:ok, params}
 
       _ ->
-        error_message(field, "#{field} is not a valid uuid", "string.uuid", true)
+        error_message(field, params, "#{field} is not a valid uuid", "string.uuid", true)
     end
   end
 

@@ -28,21 +28,21 @@ defmodule Joi.Type.DateTime do
       is_binary(params[field]) ->
         case DateTime.from_iso8601(params[field]) do
           {:ok, date_time, _utc_offset} -> {:ok, Map.put(params, field, date_time)}
-          {:error, _} -> error_tuple(field)
+          {:error, _} -> error_tuple(field, params)
         end
 
       datetime?(params[field]) ->
         {:ok, params}
 
       true ->
-        error_tuple(field)
+        error_tuple(field, params)
     end
   end
 
   defp datetime?(%DateTime{}), do: true
   defp datetime?(_), do: false
 
-  defp error_tuple(field) do
-    error_message(field, "#{field} must be a valid ISO-8601 datetime", "datetime")
+  defp error_tuple(field, params) do
+    error_message(field,  params, "#{field} must be a valid ISO-8601 datetime", "datetime")
   end
 end

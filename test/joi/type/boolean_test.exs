@@ -53,7 +53,7 @@ defmodule Joi.Type.BooleanTest do
       }
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "#{field} must be a boolean")
+               error_messages(schema, field, data, "#{field} must be a boolean")
     end
   end
 
@@ -78,7 +78,7 @@ defmodule Joi.Type.BooleanTest do
       }
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "#{field} must be a boolean")
+               error_messages(schema, field, data, "#{field} must be a boolean")
     end
   end
 end

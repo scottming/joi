@@ -1,5 +1,5 @@
 defmodule Joi.Support.Util do
-  def error_messages(schema, field, message, child_key) do
+  def error_messages(schema, field, data, message, child_key) do
     field_schema = Map.get(schema, field)
     [h | options] = field_schema
     constraint = Keyword.get(options, child_key)
@@ -10,13 +10,17 @@ defmodule Joi.Support.Util do
         else: constraint
 
     type = Atom.to_string(h) <> "." <> Atom.to_string(child_key)
-    {:error, [%{field: field, message: message, type: type, constraint: constraint}]}
+
+    {:error,
+     [%{field: field, value: data[field], message: message, type: type, constraint: constraint}]}
   end
 
-  def error_messages(schema, field, message) do
+  def error_messages(schema, field, data, message) do
     field_schema = Map.get(schema, field)
     [h | _options] = field_schema
     type = Atom.to_string(h)
-    {:error, [%{field: field, message: message, type: type, constraint: type}]}
+
+    {:error,
+     [%{field: field, value: data[field], message: message, type: type, constraint: type}]}
   end
 end

@@ -40,7 +40,7 @@ defmodule Joi.Type.ListTest do
     test "errors if field is not a list" do
       data = %{id: "1, 2, 3"}
       schema = %{id: [:list]}
-      assert Joi.validate(data, schema) == error_messages(schema, :id, "id must be a list")
+      assert Joi.validate(data, schema) == error_messages(schema, :id, data, "id must be a list")
     end
   end
 
@@ -61,10 +61,17 @@ defmodule Joi.Type.ListTest do
       schema = %{
         id: [:list, type: :number, min_length: 3]
       }
+
       field = :id
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "id must not be below length of 3", :min_length)
+               error_messages(
+                 schema,
+                 field,
+                 data,
+                 "id must not be below length of 3",
+                 :min_length
+               )
     end
   end
 
@@ -89,7 +96,7 @@ defmodule Joi.Type.ListTest do
       field = :id
 
       assert Joi.validate(data, schema) ==
-               error_messages(schema, field, "id must not exceed length of 3", :max_length)
+               error_messages(schema, field, data, "id must not exceed length of 3", :max_length)
     end
   end
 
@@ -117,6 +124,7 @@ defmodule Joi.Type.ListTest do
                   %{
                     constraint: 3,
                     field: :id,
+                    value: data[:id],
                     message: "id length must be of 3 length",
                     type: "list.length"
                   }
@@ -165,16 +173,16 @@ defmodule Joi.Type.ListTest do
       schema_string = %{id: [:list, type: :string]}
 
       assert Joi.validate(data, schema_atom) ==
-               error_messages(schema_atom, field, "id must be a list of atoms", :type)
+               error_messages(schema_atom, field, data, "id must be a list of atoms", :type)
 
       assert Joi.validate(data, schema_boolean) ==
-               error_messages(schema_boolean, field, "id must be a list of boolean", :type)
+               error_messages(schema_boolean, field, data, "id must be a list of boolean", :type)
 
       assert Joi.validate(data, schema_number) ==
-               error_messages(schema_number, field, "id must be a list of numbers", :type)
+               error_messages(schema_number, field, data, "id must be a list of numbers", :type)
 
       assert Joi.validate(data, schema_string) ==
-               error_messages(schema_string, field, "id must be a list of strings", :type)
+               error_messages(schema_string, field, data, "id must be a list of strings", :type)
     end
   end
 end
