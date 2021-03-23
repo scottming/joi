@@ -1,10 +1,9 @@
 defmodule Joi.Type.Atom do
   @moduledoc false
 
-  import Joi.Validator.Skipping
   import Joi.Util
-
-  alias Joi.Validator.Inclusion
+  import Joi.Validator.Skipping
+  import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
 
   @default_options [
     required: true
@@ -18,7 +17,7 @@ defmodule Joi.Type.Atom do
   def validate_field(field, params, options) do
     unless_skipping(:string, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- Inclusion.validate_field(:atom, field, params, options) do
+           {:ok, params} <- inclusion_validate(:atom, field, params, options) do
         {:ok, params}
       end
     end

@@ -1,7 +1,7 @@
 defmodule Joi.Type.Number do
   import Joi.Validator.Skipping
-  import Joi.Util
-  alias Joi.Validator.Inclusion
+  import Joi.Util, only: [error_message: 4, error_message: 5]
+  import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
 
   @default_options [
     required: true,
@@ -18,7 +18,7 @@ defmodule Joi.Type.Number do
   def validate_field(field, params, options) do
     unless_skipping(:number, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- Inclusion.validate_field(:number, field, params, options),
+           {:ok, params} <- inclusion_validate(:number, field, params, options),
            {:ok, params} <- integer_validate(field, params, options),
            {:ok, params} <- min_validate(field, params, options),
            {:ok, params} <-

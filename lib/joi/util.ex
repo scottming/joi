@@ -1,11 +1,13 @@
 defmodule Joi.Util do
   @types [:boolean, :date, :datetime, :list, :map, :number, :string]
   def error_message(field, params, message, type) do
-    {:error, %{field: field, value: params[field], message: message, type: type, constraint: type}}
+    {:error,
+     %{field: field, value: params[field], message: message, type: type, constraint: type}}
   end
 
   def error_message(field, params, message, type, constraint) do
-    {:error, %{field: field, value: params[field], message: message, type: type, constraint: constraint}}
+    {:error,
+     %{field: field, value: params[field], message: message, type: type, constraint: constraint}}
   end
 
   def is_schema(schema) when is_map(schema) do
@@ -27,5 +29,12 @@ defmodule Joi.Util do
   defp all_tail_options_are_keyword?(values) do
     validations = Enum.map(values, fn [_h | t] -> t end)
     Enum.all?(validations, &Keyword.keyword?/1)
+  end
+
+  def string_to_float(str) do
+    case Float.parse(str) do
+      {num, _} -> num
+      _ -> nil
+    end
   end
 end

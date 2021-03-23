@@ -3,7 +3,7 @@ defmodule Joi.Type.String do
 
   import Joi.Validator.Skipping
   import Joi.Util
-  alias Joi.Validator.Inclusion
+  import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
 
   @default_options [
     required: true,
@@ -22,7 +22,7 @@ defmodule Joi.Type.String do
   def validate_field(field, params, options) do
     unless_skipping(:string, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- Inclusion.validate_field(:string, field, params, options),
+           {:ok, params} <- inclusion_validate(:string, field, params, options),
            {:ok, params} <- min_length_validate(field, params, options),
            {:ok, params} <- max_length_validate(field, params, options),
            {:ok, params} <- length_validate(field, params, options),

@@ -58,10 +58,11 @@ defmodule Joi.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:stream_data, "~> 0.5", only: [:test, :dev]},
       {:elixir_uuid, "~> 1.2"},
+      {:decimal, "~> 2.0.0"},
+      {:stream_data, "~> 0.5", only: [:test, :dev]},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.11", only: :test},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]

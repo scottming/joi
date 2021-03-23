@@ -1,7 +1,7 @@
 defmodule Joi.Validator.Inclusion do
   import Joi.Util
 
-  def validate_field(type, field, params, %{inclusion: inclusion}) do
+  def inclusion_validate(type, field, params, %{inclusion: inclusion}) do
     case params[field] in inclusion do
       true ->
         {:ok, params}
@@ -17,7 +17,7 @@ defmodule Joi.Validator.Inclusion do
     end
   end
 
-  def validate_field(_type, _field, params, _) do
+  def inclusion_validate(_type, _field, params, _) do
     {:ok, params}
   end
 end
