@@ -5,7 +5,7 @@ defmodule Joi.Type.List do
 
   @default_options [
     required: true,
-    type: :string,
+    type: :any,
     min_length: nil,
     max_length: nil,
     length: nil
