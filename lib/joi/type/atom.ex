@@ -15,7 +15,7 @@ defmodule Joi.Type.Atom do
   end
 
   def validate_field(field, params, options) do
-    unless_skipping(:string, field, params, options) do
+    unless_skipping(:atom, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
            {:ok, params} <- inclusion_validate(:atom, field, params, options) do
         {:ok, params}
