@@ -1,6 +1,7 @@
 defmodule Joi.Type.FloatTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
+  use Joi.Support.Properties.Generators
   import Joi.Type.Float
 
   @field :field
@@ -14,10 +15,7 @@ defmodule Joi.Type.FloatTest do
   end
 
   defp random_value() do
-    integer_string = map(integer(), &Integer.to_string/1)
-    float_string = map(float(), &Float.to_string/1)
-
-    [integer(), float(), integer_string, float_string] |> one_of()
+    [integer(), float(), decimal(), integer_string(), float_string()] |> one_of()
   end
 
   defp is_value_float?(m) do

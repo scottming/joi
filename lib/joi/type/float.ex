@@ -4,6 +4,7 @@ defmodule Joi.Type.Float do
   import Joi.Validator.Max, only: [max_validate: 4]
   import Joi.Validator.Min, only: [min_validate: 4]
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
+  require Decimal
 
   @default_options [
     required: true,
@@ -36,6 +37,9 @@ defmodule Joi.Type.Float do
     cond do
       raw_value == nil ->
         {:ok, params}
+
+      Decimal.is_decimal(raw_value) ->
+        {:ok, Map.put(params, field, Decimal.to_float(raw_value))}
 
       is_float(raw_value) ->
         {:ok, params}

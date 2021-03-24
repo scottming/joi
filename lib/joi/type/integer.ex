@@ -31,6 +31,7 @@ defmodule Joi.Type.Integer do
   end
 
   defp convert(field, params, _option) do
+    # NOTE: do not convert decimal
     raw_value = params[field]
 
     cond do
