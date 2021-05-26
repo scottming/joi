@@ -11,11 +11,29 @@ defmodule Joi.Type.Map do
 
   def validate_field(field, params, options) do
     unless_skipping(:map, field, params, options) do
+      parent_path =
+        if Map.get(params, :parent_path) do
+          params.parent_path ++ [field]
+        else
+          [field]
+        end
+
       with {:ok, params} <- validate_schema(field, params, options),
-           {:ok, value} <- Joi.validate(params[field], options.schema) do
+           {:ok, value} <-
+             Joi.validate(
+               params[field],
+               options.schema |> append_parent_path_to_fields(parent_path)
+             ) do
         {:ok, %{params | field => value}}
       end
     end
+  end
+
+  defp append_parent_path_to_fields(schema, parent_path) do
+    for {k, opts} <- schema do
+      {k, opts ++ [parent_path: parent_path]}
+    end
+    |> Enum.into(%{})
   end
 
   def validate_schema(field, params, options) do

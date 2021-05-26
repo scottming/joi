@@ -57,7 +57,7 @@ defmodule Joi.Type.Boolean do
         {:ok, Map.replace!(params, field, false)}
 
       true ->
-        error_message(field,  params, "#{field} must be a boolean", "boolean")
+        error_message(field, params, "#{field} must be a boolean", "boolean")
     end
   end
 end

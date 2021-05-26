@@ -1,15 +1,17 @@
-# defmodule Joi.Type.MapTest do
-#   use ExUnit.Case, async: true
+defmodule Joi.Type.MapTest do
+  use ExUnit.Case, async: true
 
-#   describe "validate nested types" do
-#     test "success: when validate without converting" do
-#       raw_data = %{m: %{id: 1}}
-#       sub_schema = %{id: [:number, max: 3]}
-#       schema = %{m: [:map, schema: sub_schema]}
+  describe "validate nested types" do
+    test "success: when validate without converting" do
+      raw_data = %{m: %{id: 1}}
+      sub_schema = %{id: [:integer, max: 3]}
+      schema = %{m: [:map, schema: sub_schema]}
 
-#       assert {:ok, data} = Joi.validate(raw_data, schema)
-#       assert data == raw_data
-#     end
+      assert {:ok, data} = Joi.validate(raw_data, schema)
+      assert data == raw_data
+    end
+  end
+end
 
 #     test "success: validate and convert" do
 #       raw_data = %{m: %{id: "1"}}
@@ -64,4 +66,3 @@
 #                ]
 #     end
 #   end
-# end

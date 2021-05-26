@@ -9,6 +9,17 @@ defmodule Joi.Type.Atom do
     required: true
   ]
 
+  def message(code, options) do
+    field = options[:path] |> hd
+    inclusion = options[:inclusion]
+
+    %{
+      "atom.base" => "#{field} must be an atom",
+      "atom.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
+    }
+    |> Map.get(code)
+  end
+
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
     validate_field(field, params, options)

@@ -11,6 +11,20 @@ defmodule Joi.Type.Integer do
     max: nil
   ]
 
+  def message(code, options) do
+    field = options[:path] |> hd
+    limit = options[:limit]
+    inclusion = options[:inclusion]
+
+    %{
+      "integer.base" => "#{field} must be a string",
+      "integer.max" => "#{field} must be less than or equal to #{limit}",
+      "integer.min" => "#{field} must be greater than or equal to #{limit}",
+      "integer.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
+    }
+    |> Map.get(code)
+  end
+
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
     validate_field(field, params, options)
@@ -30,7 +44,7 @@ defmodule Joi.Type.Integer do
     end
   end
 
-  defp convert(field, params, _option) do
+  defp convert(field, params, options) do
     # NOTE: do not convert decimal
     raw_value = params[field]
 
@@ -48,7 +62,7 @@ defmodule Joi.Type.Integer do
         {:ok, Map.put(params, field, string_to_integer(raw_value))}
 
       true ->
-        error_message(field, params, "#{field} must be a integer", "integer")
+        error("integer.base", path: path(field, options), value: raw_value)
     end
   end
 
@@ -59,3 +73,4 @@ defmodule Joi.Type.Integer do
     end
   end
 end
+

@@ -44,6 +44,6 @@ defmodule Joi.Type.Date do
   defp date?(_), do: false
 
   defp error_tuple(field, params) do
-    error_message(field,  params, "#{field} must be a valid ISO-8601 date", "date")
+    error_message(field, params, "#{field} must be a valid ISO-8601 date", "date")
   end
 end

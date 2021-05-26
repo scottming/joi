@@ -1,7 +1,7 @@
 defmodule Joi.Validator.Max do
   import Joi.Util
 
-  def max_validate(type, field, params, %{max: max})
+  def max_validate(type, field, params, %{max: max} = options)
       when type in [:float, :integer] and not is_nil(max) do
     raw_value = params[field]
 
@@ -51,3 +51,4 @@ defmodule Joi.Validator.Max do
     Decimal.from_float(f)
   end
 end
+

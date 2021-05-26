@@ -43,6 +43,6 @@ defmodule Joi.Type.DateTime do
   defp datetime?(_), do: false
 
   defp error_tuple(field, params) do
-    error_message(field,  params, "#{field} must be a valid ISO-8601 datetime", "datetime")
+    error_message(field, params, "#{field} must be a valid ISO-8601 datetime", "datetime")
   end
 end

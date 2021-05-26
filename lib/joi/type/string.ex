@@ -34,7 +34,7 @@ defmodule Joi.Type.String do
     end
   end
 
-  def convert(field, params, _options) do
+  def convert(field, params, options) do
     cond do
       params[field] == nil ->
         {:ok, params}
@@ -46,7 +46,9 @@ defmodule Joi.Type.String do
         {:ok, Map.update!(params, field, &to_string/1)}
 
       true ->
-        error_message(field, params, "#{field} must be a string", "string")
+        nil
+        # error(params, type: , constraint: , path: )
+        # error_message(field, params, "#{field} must be a string", "string")
     end
   end
 

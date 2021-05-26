@@ -1,5 +1,25 @@
 defmodule Joi.Util do
+  defdelegate error(type, opts), to: Joi.Error, as: :new
+
   @types [:boolean, :date, :datetime, :list, :map, :number, :string]
+
+  @doc """
+  Return the real path of error
+
+  Examples:
+    iex> path("2", parent_path: [1])
+    [1, "2"]
+    iex> path("2", [])
+    ["2"]
+  """
+  def path(field, %{parent_path: parent_path}) do
+    parent_path ++ [field]
+  end
+
+  def path(field, _) do
+    [field]
+  end
+
   def error_message(field, params, message, type) do
     {:error,
      %{field: field, value: params[field], message: message, type: type, constraint: type}}
@@ -36,5 +56,9 @@ defmodule Joi.Util do
       {num, _} -> num
       _ -> nil
     end
+  end
+
+  def path(%{parent_path: parent_path}, field) do
+    parent_path ++ [field]
   end
 end
