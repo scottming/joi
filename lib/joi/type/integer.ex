@@ -5,6 +5,8 @@ defmodule Joi.Type.Integer do
   import Joi.Validator.Min, only: [min_validate: 4]
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
 
+  @t :integer
+
   @default_options [
     required: true,
     min: nil,
@@ -17,10 +19,10 @@ defmodule Joi.Type.Integer do
     inclusion = options[:inclusion]
 
     %{
-      "integer.base" => "#{field} must be a string",
-      "integer.max" => "#{field} must be less than or equal to #{limit}",
-      "integer.min" => "#{field} must be greater than or equal to #{limit}",
-      "integer.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
+      "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
     |> Map.get(code)
   end
@@ -62,7 +64,7 @@ defmodule Joi.Type.Integer do
         {:ok, Map.put(params, field, string_to_integer(raw_value))}
 
       true ->
-        error("integer.base", path: path(field, options), value: raw_value)
+        error("#{@t}.base", path: path(field, options), value: raw_value)
     end
   end
 

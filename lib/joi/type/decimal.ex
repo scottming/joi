@@ -6,11 +6,26 @@ defmodule Joi.Type.Decimal do
   import Joi.Validator.Max, only: [max_validate: 4]
   import Joi.Validator.Min, only: [min_validate: 4]
 
+  @t :decimal
+
   @default_options [
     required: true,
     min: nil,
     max: nil
   ]
+
+  def message(code, options) do
+    field = options[:path] |> hd
+    limit = options[:limit]
+
+    %{
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
+      "#{@t}.min" => "#{field} must be greater than or equal to #{limit}"
+    }
+    |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -28,7 +43,7 @@ defmodule Joi.Type.Decimal do
     end
   end
 
-  def convert(field, params, _options) do
+  def convert(field, params, options) do
     raw_value = params[field]
 
     cond do
@@ -50,7 +65,8 @@ defmodule Joi.Type.Decimal do
         {:ok, Map.put(params, field, value)}
 
       true ->
-        error_message(field, params, "#{field} must be a decimal", "decimal")
+        error("#{@t}.base", path: path(field, options), value: raw_value)
     end
   end
 end
+

@@ -3,6 +3,7 @@ defmodule Joi.Type.List do
   import Joi.Validator.Skipping
   import Joi.Util
 
+  @t :list
   @default_options [
     required: true,
     type: :any,
@@ -10,6 +11,19 @@ defmodule Joi.Type.List do
     max_length: nil,
     length: nil
   ]
+
+  def message(code, options) do
+    field = options[:path] |> hd
+    type = String.split(code, ".") |> List.last()
+
+    %{
+      # atoms, numbers, :strings
+      "#{@t}.#{type}" => "#{field} must be a #{@t} of #{type}s",
+      "#{@t}.boolean" => "#{field} must be a #{@t} of boolean",
+      "#{@t}.base" => "#{field} must be a #{@t}"
+    }
+    |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -140,3 +154,4 @@ defmodule Joi.Type.List do
     end
   end
 end
+

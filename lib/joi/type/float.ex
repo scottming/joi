@@ -6,11 +6,21 @@ defmodule Joi.Type.Float do
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
   require Decimal
 
+  @t :float
   @default_options [
     required: true,
     min: nil,
     max: nil
   ]
+
+  def message(code, options) do
+    field = options[:path] |> hd
+
+    %{
+      "#{@t}.base" => "#{field} must be a #{@t}"
+    }
+    |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -31,7 +41,7 @@ defmodule Joi.Type.Float do
     end
   end
 
-  defp convert(field, params, _option) do
+  defp convert(field, params, options) do
     raw_value = params[field]
 
     cond do
@@ -52,7 +62,8 @@ defmodule Joi.Type.Float do
         {:ok, Map.put(params, field, string_to_float(raw_value))}
 
       true ->
-        error_message(field, params, "#{field} must be a float", "float")
+        error("#{@t}.base", path: path(field, options), value: raw_value)
     end
   end
 end
+
