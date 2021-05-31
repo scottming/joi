@@ -1,4 +1,4 @@
-defmodule Joi.Type.DateTime do
+defmodule Joi.Type.Datetime do
   @moduledoc false
   import Joi.Validator.Skipping
   import Joi.Util

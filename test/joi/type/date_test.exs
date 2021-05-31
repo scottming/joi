@@ -18,7 +18,7 @@ defmodule Joi.Type.DateTest do
   @incorrect_date_examples ["2018-06-01T06:32:00Z", 1_622_443_538, ~U[2021-05-31 06:57:59.330819Z]]
 
   for i <- @incorrect_date_examples do
-    test "success: when input #{i}" do
+    test "error: when input #{i}" do
       data = %{@field => unquote(i |> Macro.escape())}
       assert {:error, _} = validate_field(@field, data, [])
     end
