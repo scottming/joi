@@ -13,12 +13,10 @@ defmodule Joi.Validator.Skipping do
         true ->
           full_type = Atom.to_string(unquote(type)) <> "." <> "required"
 
-          error_message(
-            unquote(field),
-            unquote(params),
-            "#{unquote(field)} is required",
+          error(
             full_type,
-            true
+            path: path(unquote(field), unquote(options)),
+            value: nil
           )
       end
     end
@@ -36,3 +34,4 @@ defmodule Joi.Validator.Skipping do
     Map.has_key?(params, field) && params[field] != nil
   end
 end
+

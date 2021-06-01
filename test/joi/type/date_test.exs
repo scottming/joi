@@ -2,7 +2,7 @@ defmodule Joi.Type.DateTest do
   use ExUnit.Case, async: true
   import Joi.Type.Date
 
-  @t :date
+  # @t :date
   @field :field
 
   @correct_date_examples ["1990-05-30", ~D[1990-05-31]]
