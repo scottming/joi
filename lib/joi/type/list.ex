@@ -20,7 +20,8 @@ defmodule Joi.Type.List do
       # atoms, numbers, :strings
       "#{@t}.#{type}" => "#{field} must be a #{@t} of #{type}s",
       "#{@t}.boolean" => "#{field} must be a #{@t} of boolean",
-      "#{@t}.base" => "#{field} must be a #{@t}"
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
     }
     |> Map.get(code)
   end
