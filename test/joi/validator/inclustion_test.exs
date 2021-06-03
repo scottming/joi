@@ -10,9 +10,8 @@ defmodule Joi.Validator.InclusionTest do
   describe "validate inclusion" do
     for t <- types_by("inclusion") do
       test "error: when type is #{t}, inclusion is #{inspect(@inclusion)}" do
-        type_module = Module.safe_concat(Joi.Type, unquote(t) |> Atom.to_string() |> Macro.camelize())
-
         data = %{@field => 1}
+        type_module = Module.safe_concat(Joi.Type, unquote(t) |> atom_type_to_mod())
         assert {:error, _} = apply(type_module, :validate_field, [@field, data, [inclusion: @inclusion]])
       end
     end

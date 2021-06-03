@@ -1,27 +1,7 @@
 defmodule Joi.Support.Util do
-  def error_messages(schema, field, data, message, child_key) do
-    field_schema = Map.get(schema, field)
-    [h | options] = field_schema
-    constraint = Keyword.get(options, child_key)
-
-    constraint =
-      if is_atom(constraint) and not is_boolean(constraint),
-        do: Atom.to_string(constraint),
-        else: constraint
-
-    type = Atom.to_string(h) <> "." <> Atom.to_string(child_key)
-
-    {:error, [%{field: field, value: data[field], message: message, type: type, constraint: constraint}]}
-  end
-
-  def error_messages(schema, field, data, message) do
-    field_schema = Map.get(schema, field)
-    [h | _options] = field_schema
-    type = Atom.to_string(h)
-
-    {:error, [%{field: field, value: data[field], message: message, type: type, constraint: type}]}
-  end
-
+  @doc """
+  Returns all types that Joi supported
+  """
   def all_types() do
     with {:ok, list} <- :application.get_key(:joi, :modules) do
       list
@@ -54,6 +34,17 @@ defmodule Joi.Support.Util do
     end)
     |> Enum.reject(fn {_x, message} -> is_nil(message) end)
     |> Enum.map(&elem(&1, 0))
+  end
+
+  @doc """
+  Return a module name when input a atom
+
+  Examples:
+    iex> atom_type_to_mod(:atom)
+    Atom
+  """
+  def atom_type_to_mod(atom) when is_atom(atom) do
+    atom |> Atom.to_string() |> Macro.camelize()
   end
 end
 
