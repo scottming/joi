@@ -4,6 +4,7 @@ defmodule Joi.Type.IntegerTest do
   use Joi.Support.Properties.Generators
   import Joi.Type.Integer
 
+  @t :integer
   @field :field
 
   property "check all input will convert to an integer" do
@@ -21,7 +22,7 @@ defmodule Joi.Type.IntegerTest do
 
     assert error == %Joi.Error{
              type: "integer.base",
-             message: "field must be a string",
+             message: "field must be a #{@t}",
              path: [:field],
              context: %{key: :field, value: <<123>>}
            }
@@ -48,7 +49,7 @@ defmodule Joi.Type.IntegerTest do
 
     assert error == %Joi.Error{
              context: %{key: @field, value: 0, inclusion: inclusion},
-             message: "field must be one of #{inspect inclusion}",
+             message: "field must be one of #{inspect(inclusion)}",
              path: [@field],
              type: "integer.inclusion"
            }

@@ -26,7 +26,8 @@ defmodule Joi.Type.String do
       "#{@t}.min_length" => "#{field} length must be at least #{limit} characters long",
       "#{@t}.length" => "#{field} length must be #{limit} characters",
       # TODO: .format or .regex
-      "#{@t}.format" => "#{field} must be in a valid format"
+      "#{@t}.format" => "#{field} must be in a valid format",
+      "#{@t}.uuid" => "#{field} must be a uuid"
     }
     |> Map.get(code)
   end
@@ -122,7 +123,7 @@ defmodule Joi.Type.String do
 
   defp regex_validate(field, params, %{regex: regex} = options) do
     if params[field] == nil or !Regex.match?(regex, params[field]) do
-      error("#{@t}.regex", path: path(field, options), value: params[field], regex: regex)
+      error("#{@t}.format", path: path(field, options), value: params[field], regex: regex)
     else
       {:ok, params}
     end

@@ -12,6 +12,7 @@ defmodule Joi.Validator.RequiredTest do
         module = Module.safe_concat([Joi.Type, type_module])
         assert {:error, error} = apply(module, :validate_field, [@field, data, []])
         assert error.type == "#{unquote(t)}.required"
+        assert error.message == "#{@field} is required"
       end
     end
   end
