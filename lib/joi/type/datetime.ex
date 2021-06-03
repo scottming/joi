@@ -25,7 +25,7 @@ defmodule Joi.Type.Datetime do
   end
 
   def validate_field(field, data, options) do
-    unless_skipping(:datetime, field, data, options) do
+    unless_skipping(@t, field, data, options) do
       with {:ok, data} <- convert(field, data, options) do
         {:ok, data}
       end

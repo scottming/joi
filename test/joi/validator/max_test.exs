@@ -1,9 +1,8 @@
-defmodule Joi.Type.Atom do
-    @moduledoc false
+defmodule Joi.Validator.MaxTest do
+  @moduledoc false
 
-  import Joi.Util
-  import Joi.Validator.Skipping
-  import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
+  use ExUnit.Case, async: true
+  use ExUnitProperties
 
   describe "max/min validation" do
     @field :field
@@ -47,3 +46,4 @@ defmodule Joi.Type.Atom do
     end
   end
 end
+

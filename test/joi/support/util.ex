@@ -36,5 +36,24 @@ defmodule Joi.Support.Util do
       |> Enum.map(&(&1 |> Module.split() |> List.last() |> String.downcase() |> String.to_atom()))
     end
   end
+
+  @doc """
+  Returns a list of types that support the input validator
+
+  Examples: 
+    iex> types(validator)
+    [:string, atom, :list]
+  """
+  def types_by(validator) do
+    all_types()
+    |> Enum.map(fn x ->
+      module = Module.safe_concat(Joi.Type, Atom.to_string(x) |> Macro.camelize())
+      args = ["#{x}.#{validator}", [path: [:fake_path]]]
+      message = apply(module, :message, args)
+      {x, message}
+    end)
+    |> Enum.reject(fn {_x, message} -> is_nil(message) end)
+    |> Enum.map(&elem(&1, 0))
+  end
 end
 

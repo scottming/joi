@@ -10,7 +10,6 @@ defmodule Joi.Type do
 
     cond do
       type == :atom -> Type.Atom.validate_field(field, data, options)
-      type == :number -> Type.Number.validate_field(field, data, options)
       type == :decimal -> Type.Decimal.validate_field(field, data, options)
       type == :float -> Type.Float.validate_field(field, data, options)
       type == :integer -> Type.Integer.validate_field(field, data, options)
