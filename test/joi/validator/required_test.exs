@@ -9,8 +9,8 @@ defmodule Joi.Validator.RequiredTest do
       test "error: with nil field when validate #{t} type" do
         data = %{@field => nil}
         type_module = unquote(t) |> atom_type_to_mod()
-        module = Module.safe_concat([Joi.Type, type_module])
-        assert {:error, error} = apply(module, :validate_field, [@field, data, []])
+
+        assert {:error, error} = apply(type_module, :validate_field, [@field, data, []])
         assert error.type == "#{unquote(t)}.required"
         assert error.message == "#{@field} is required"
       end

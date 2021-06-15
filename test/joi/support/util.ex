@@ -41,10 +41,10 @@ defmodule Joi.Support.Util do
 
   Examples:
     iex> atom_type_to_mod(:atom)
-    Atom
+    Joi.Type.Atom
   """
-  def atom_type_to_mod(atom) when is_atom(atom) do
-    atom |> Atom.to_string() |> Macro.camelize()
+  def atom_type_to_mod(t) when is_atom(t) do
+    Module.safe_concat(Joi.Type, t |> Atom.to_string() |> Macro.camelize())
   end
 end
 

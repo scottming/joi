@@ -15,9 +15,15 @@ defmodule Joi.Type.Float do
 
   def message(code, options) do
     field = options[:path] |> hd
+    limit = options[:limit]
+    inclusion = options[:inclusion]
 
     %{
-      "#{@t}.base" => "#{field} must be a #{@t}"
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
+      "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
     |> Map.get(code)
   end

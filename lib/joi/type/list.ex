@@ -3,6 +3,10 @@ defmodule Joi.Type.List do
   import Joi.Validator.Skipping
   import Joi.Util
 
+  import Joi.Validator.MaxLength, only: [max_length_validate: 4]
+  import Joi.Validator.MinLength, only: [min_length_validate: 4]
+  import Joi.Validator.Length, only: [length_validate: 4]
+
   @t :list
   @default_options [
     required: true,
@@ -14,14 +18,18 @@ defmodule Joi.Type.List do
 
   def message(code, options) do
     field = options[:path] |> hd
-    type = String.split(code, ".") |> List.last()
+    # type = String.split(code, ".") |> List.last()
+    limit = options[:limit]
 
     %{
       # atoms, numbers, :strings
-      "#{@t}.#{type}" => "#{field} must be a #{@t} of #{type}s",
-      "#{@t}.boolean" => "#{field} must be a #{@t} of boolean",
+      # "#{@t}.#{type}" => "#{field} must be a #{@t} of #{type}s",
+      # "#{@t}.boolean" => "#{field} must be a #{@t} of boolean",
       "#{@t}.base" => "#{field} must be a #{@t}",
       "#{@t}.required" => "#{field} is required",
+      "#{@t}.length" => "#{field} must contain #{limit} items",
+      "#{@t}.max_length" => "#{field} must contain less than or equal to #{limit} items",
+      "#{@t}.min_length" => "#{field} must contain at least #{limit} items"
     }
     |> Map.get(code)
   end
@@ -33,17 +41,17 @@ defmodule Joi.Type.List do
 
   def validate_field(field, params, options) do
     unless_skipping(:list, field, params, options) do
-      with {:ok, params} <- validate_list(field, params),
+      with {:ok, params} <- validate_list(field, params, options),
            {:ok, params} <- type_validate(field, params, options),
-           {:ok, params} <- min_length_validate(field, params, options),
-           {:ok, params} <- max_length_validate(field, params, options),
-           {:ok, params} <- length_validate(field, params, options) do
+           {:ok, params} <- min_length_validate(@t, field, params, options),
+           {:ok, params} <- max_length_validate(@t, field, params, options),
+           {:ok, params} <- length_validate(@t, field, params, options) do
         {:ok, params}
       end
     end
   end
 
-  def validate_list(field, params) do
+  def validate_list(field, params, options) do
     cond do
       params[field] == nil ->
         {:ok, params}
@@ -52,107 +60,13 @@ defmodule Joi.Type.List do
         {:ok, params}
 
       true ->
-        error_message(field, params, "#{field} must be a list", "list")
+        error("#{@t}.base", path: path(field, options), value: params[field])
     end
   end
 
-  def type_validate(field, params, %{type: type}) do
-    case type do
-      :boolean -> validate_boolean(params, field)
-      :number -> validate_number(params, field)
-      :string -> validate_string(params, field)
-      :atom -> validate_atom(params, field)
-      :any -> {:ok, params}
-    end
-  end
-
-  defp validate_atom(params, field) do
-    if Enum.all?(params[field], &is_atom/1) do
-      {:ok, params}
-    else
-      error_message(field, params, "#{field} must be a list of atoms", "list.type", "atom")
-    end
-  end
-
-  defp validate_boolean(params, field) do
-    if Enum.all?(params[field], &is_boolean/1) do
-      {:ok, params}
-    else
-      error_message(field, params, "#{field} must be a list of boolean", "list.type", "boolean")
-    end
-  end
-
-  defp validate_number(params, field) do
-    if Enum.all?(params[field], &is_number/1) do
-      {:ok, params}
-    else
-      error_message(field, params, "#{field} must be a list of numbers", "list.type", "number")
-    end
-  end
-
-  defp validate_string(params, field) do
-    if Enum.all?(params[field], &is_binary/1) do
-      {:ok, params}
-    else
-      error_message(field, params, "#{field} must be a list of strings", "list.type", "string")
-    end
-  end
-
-  defp min_length_validate(_field, params, %{min_length: nil}) do
+  def type_validate(_field, params, %{type: _type}) do
+    # TODO: support all types that Joi supported
     {:ok, params}
-  end
-
-  defp min_length_validate(field, params, %{min_length: min_length})
-       when is_integer(min_length) and min_length >= 0 do
-    if length(params[field]) < min_length do
-      error_message(
-        field,
-        params,
-        "#{field} must not be below length of #{min_length}",
-        "list.min_length",
-        min_length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp max_length_validate(_field, params, %{max_length: nil}) do
-    {:ok, params}
-  end
-
-  defp max_length_validate(field, params, %{max_length: max_length})
-       when is_integer(max_length) and max_length >= 0 do
-    if length(params[field]) > max_length do
-      error_message(
-        field,
-        params,
-        "#{field} must not exceed length of #{max_length}",
-        "list.max_length",
-        max_length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp length_validate(_field, params, %{length: nil}) do
-    {:ok, params}
-  end
-
-  defp length_validate(field, params, %{length: length})
-       when is_integer(length) and length >= 0 do
-    if length(params[field]) != length do
-      error_message(
-        field,
-        params,
-        "#{field} length must be of #{length} length",
-        "list.length",
-        length
-      )
-    else
-      {:ok, params}
-    end
   end
 end
 

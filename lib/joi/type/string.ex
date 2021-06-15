@@ -4,6 +4,9 @@ defmodule Joi.Type.String do
   import Joi.Validator.Skipping
   import Joi.Util
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
+  import Joi.Validator.MaxLength, only: [max_length_validate: 4]
+  import Joi.Validator.MinLength, only: [min_length_validate: 4]
+  import Joi.Validator.Length, only: [length_validate: 4]
 
   @t :string
 
@@ -19,12 +22,15 @@ defmodule Joi.Type.String do
   def message(code, options) do
     field = options[:path] |> hd
     limit = options[:limit]
+    inclusion = options[:inclusion]
 
     %{
       "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
       "#{@t}.max_length" => "#{field} length must be less than or equal to #{limit} characters long",
       "#{@t}.min_length" => "#{field} length must be at least #{limit} characters long",
       "#{@t}.length" => "#{field} length must be #{limit} characters",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}",
       # TODO: .format or .regex
       "#{@t}.format" => "#{field} must be in a valid format",
       "#{@t}.uuid" => "#{field} must be a uuid"
@@ -40,10 +46,10 @@ defmodule Joi.Type.String do
   def validate_field(field, params, options) do
     unless_skipping(:string, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- inclusion_validate(:string, field, params, options),
-           {:ok, params} <- min_length_validate(field, params, options),
-           {:ok, params} <- max_length_validate(field, params, options),
-           {:ok, params} <- length_validate(field, params, options),
+           {:ok, params} <- inclusion_validate(@t, field, params, options),
+           {:ok, params} <- min_length_validate(@t, field, params, options),
+           {:ok, params} <- max_length_validate(@t, field, params, options),
+           {:ok, params} <- length_validate(@t, field, params, options),
            {:ok, params} <- regex_validate(field, params, options),
            {:ok, params} <-
              uuid_validate(field, params, options) do
@@ -68,53 +74,6 @@ defmodule Joi.Type.String do
       true ->
         error("#{@t}.base", path: path(field, options), value: value)
     end
-  end
-
-  defp min_length_validate(field, params, %{min_length: min_length} = options)
-       when is_integer(min_length) and min_length > 0 do
-    if params[field] == nil or String.length(params[field]) < min_length do
-      error("#{@t}.min_length",
-        path: path(field, options),
-        value: params[field],
-        limit: min_length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp min_length_validate(_field, params, %{}) do
-    {:ok, params}
-  end
-
-  defp max_length_validate(_field, params, %{max_length: nil}) do
-    {:ok, params}
-  end
-
-  defp max_length_validate(field, params, %{max_length: max_length} = options)
-       when is_integer(max_length) and max_length >= 0 do
-    if Map.get(params, field) && String.length(params[field]) > max_length do
-      error("#{@t}.max_length",
-        path: path(field, options),
-        value: params[field],
-        limit: max_length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp length_validate(field, params, %{length: length} = options)
-       when is_integer(length) and length > 0 do
-    if params[field] == nil || String.length(params[field]) != length do
-      error("#{@t}.length", path: path(field, options), value: params[field], limit: length)
-    else
-      {:ok, params}
-    end
-  end
-
-  defp length_validate(_field, params, %{length: _}) do
-    {:ok, params}
   end
 
   defp regex_validate(_field, params, %{regex: nil}) do

@@ -16,8 +16,8 @@ defmodule Joi.Type.Atom do
     inclusion = options[:inclusion]
 
     %{
-      "#{@t}.required" => "#{field} is required",
       "#{@t}.base" => "#{field} must be an #{@t}",
+      "#{@t}.required" => "#{field} is required",
       "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
     |> Map.get(code)

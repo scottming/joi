@@ -20,16 +20,6 @@ defmodule Joi.Util do
     [field]
   end
 
-  def error_message(field, params, message, type) do
-    {:error,
-     %{field: field, value: params[field], message: message, type: type, constraint: type}}
-  end
-
-  def error_message(field, params, message, type, constraint) do
-    {:error,
-     %{field: field, value: params[field], message: message, type: type, constraint: constraint}}
-  end
-
   def is_schema(schema) when is_map(schema) do
     values = Enum.map(schema, fn {_k, v} -> v end)
 
@@ -58,7 +48,12 @@ defmodule Joi.Util do
     end
   end
 
-  def path(%{parent_path: parent_path}, field) do
-    parent_path ++ [field]
+  def len(value) when is_binary(value) do
+    String.length(value)
+  end
+
+  def len(value) do
+    length(value)
   end
 end
+

@@ -64,7 +64,8 @@ defmodule Joi.MixProject do
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.11", only: :test},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:assertions, "~> 0.10", only: :test}
     ]
   end
 end

@@ -20,6 +20,7 @@ defmodule Joi.Type.Integer do
 
     %{
       "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
       "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
       "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
       "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
