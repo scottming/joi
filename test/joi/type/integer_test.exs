@@ -63,4 +63,3 @@ defmodule Joi.Type.IntegerTest do
     m |> Map.get(@field) |> is_integer()
   end
 end
-

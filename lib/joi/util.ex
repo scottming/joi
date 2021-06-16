@@ -22,10 +22,7 @@ defmodule Joi.Util do
 
   def is_schema(schema) when is_map(schema) do
     values = Enum.map(schema, fn {_k, v} -> v end)
-
-    all_values_are_list?(values) &&
-      all_types_are_validated?(values) &&
-      all_tail_options_are_keyword?(values)
+    all_values_are_list?(values) && all_types_are_validated?(values) && all_tail_options_are_keyword?(values)
   end
 
   def is_schema(_schema) do
@@ -56,4 +53,3 @@ defmodule Joi.Util do
     length(value)
   end
 end
-

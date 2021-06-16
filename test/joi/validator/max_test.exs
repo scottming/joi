@@ -46,4 +46,3 @@ defmodule Joi.Validator.MaxTest do
     end
   end
 end
-

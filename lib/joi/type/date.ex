@@ -61,4 +61,3 @@ defmodule Joi.Type.Date do
 
   defp date?(_), do: false
 end
-

@@ -76,4 +76,3 @@ defmodule Joi.Type.Integer do
     end
   end
 end
-

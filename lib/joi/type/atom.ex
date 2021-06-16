@@ -70,4 +70,3 @@ defmodule Joi.Type.Atom do
     String.to_atom(s)
   end
 end
-

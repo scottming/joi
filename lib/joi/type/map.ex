@@ -2,7 +2,17 @@ defmodule Joi.Type.Map do
   import Joi.Validator.Skipping
   import Joi.Util
 
-  @default_options required: true
+  @t :map
+  @default_options required: true, schema: nil
+
+  def message(code, options) do
+    field = options[:path] |> hd
+
+    %{
+      "#{@t}.base" => "#{field} must be a #{@t}"
+    }
+    |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -11,19 +21,7 @@ defmodule Joi.Type.Map do
 
   def validate_field(field, params, options) do
     unless_skipping(:map, field, params, options) do
-      parent_path =
-        if Map.get(params, :parent_path) do
-          params.parent_path ++ [field]
-        else
-          [field]
-        end
-
-      with {:ok, params} <- validate_schema(field, params, options),
-           {:ok, value} <-
-             Joi.validate(
-               params[field],
-               options.schema |> append_parent_path_to_fields(parent_path)
-             ) do
+      with {:ok, value} <- validate_by_field_schema(field, params, options) do
         {:ok, %{params | field => value}}
       end
     end
@@ -36,12 +34,28 @@ defmodule Joi.Type.Map do
     |> Enum.into(%{})
   end
 
-  def validate_schema(field, params, options) do
-    schema = Map.get(options, :schema) || raise "not found schema when validate #{field}"
+  defp parent_path(field, options) do
+    if Map.get(options, :parent_path) do
+      options.parent_path ++ [field]
+    else
+      [field]
+    end
+  end
 
-    case is_schema(schema) do
+  def validate_by_field_schema(field, params, %{schema: nil} = options) do
+    case is_map(params[field]) do
       true -> {:ok, params}
-      false -> {:error, "invalid schema when validate #{field}"}
+      false -> error("#{@t}.base", path: path(field, options), value: params[field])
+    end
+  end
+
+  def validate_by_field_schema(field, params, %{schema: schema} = options) do
+    parent_path = parent_path(field, options)
+    field_schema = append_parent_path_to_fields(schema, parent_path)
+
+    case Joi.validate(params[field], field_schema) do
+      {:ok, value} -> {:ok, value}
+      other -> other
     end
   end
 end

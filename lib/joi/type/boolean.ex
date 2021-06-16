@@ -74,4 +74,3 @@ defmodule Joi.Type.Boolean do
     end
   end
 end
-

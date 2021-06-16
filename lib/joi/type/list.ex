@@ -69,4 +69,3 @@ defmodule Joi.Type.List do
     {:ok, params}
   end
 end
-

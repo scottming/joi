@@ -19,8 +19,7 @@ defmodule Joi.Error do
     message = Module.safe_concat(Joi.Type, base_type(type)) |> apply(:message, [type, options])
     special_properties = options |> Keyword.drop([:path, :value]) |> Enum.into(%{})
 
-    context =
-      %{key: options[:path] |> hd, value: options[:value]} |> Map.merge(special_properties)
+    context = %{key: options[:path] |> hd, value: options[:value]} |> Map.merge(special_properties)
 
     {:error, %Error{type: type, message: message, path: path, context: context}}
   end
@@ -30,4 +29,3 @@ defmodule Joi.Error do
     code |> String.split(".") |> hd |> Macro.camelize()
   end
 end
-

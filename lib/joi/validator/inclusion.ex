@@ -17,4 +17,3 @@ defmodule Joi.Validator.Inclusion do
     {:ok, params}
   end
 end
-

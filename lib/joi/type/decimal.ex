@@ -69,4 +69,3 @@ defmodule Joi.Type.Decimal do
     end
   end
 end
-

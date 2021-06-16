@@ -34,4 +34,3 @@ defmodule Joi.Type.StringTest do
     end
   end
 end
-

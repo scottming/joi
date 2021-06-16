@@ -17,4 +17,3 @@ defmodule Joi.Validator.RequiredTest do
     end
   end
 end
-

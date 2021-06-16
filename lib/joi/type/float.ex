@@ -72,4 +72,3 @@ defmodule Joi.Type.Float do
     end
   end
 end
-

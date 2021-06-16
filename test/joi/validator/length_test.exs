@@ -22,4 +22,3 @@ defmodule Joi.Validator.LengthTest do
     end
   end
 end
-

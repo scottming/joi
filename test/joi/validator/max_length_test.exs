@@ -24,4 +24,3 @@ defmodule Joi.Validator.MaxLengthTest do
     end
   end
 end
-

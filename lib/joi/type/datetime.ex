@@ -59,4 +59,3 @@ defmodule Joi.Type.Datetime do
   defp datetime?(%DateTime{}), do: true
   defp datetime?(_), do: false
 end
-

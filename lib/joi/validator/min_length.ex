@@ -18,4 +18,3 @@ defmodule Joi.Validator.MinLength do
     {:ok, params}
   end
 end
-

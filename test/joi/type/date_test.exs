@@ -24,4 +24,3 @@ defmodule Joi.Type.DateTest do
     end
   end
 end
-

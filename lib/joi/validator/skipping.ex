@@ -34,4 +34,3 @@ defmodule Joi.Validator.Skipping do
     Map.has_key?(params, field) && params[field] != nil
   end
 end
-

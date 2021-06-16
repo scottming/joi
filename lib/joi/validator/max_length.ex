@@ -6,7 +6,7 @@ defmodule Joi.Validator.MaxLength do
   end
 
   def max_length_validate(type, field, params, %{max_length: max_length} = options)
-       when is_integer(max_length) and max_length >= 0 do
+      when is_integer(max_length) and max_length >= 0 do
     if Map.get(params, field) && len(params[field]) > max_length do
       error("#{type}.max_length",
         path: path(field, options),
@@ -18,4 +18,3 @@ defmodule Joi.Validator.MaxLength do
     end
   end
 end
-

@@ -40,4 +40,3 @@ defmodule Joi.Type.BooleanTest do
     end
   end
 end
-

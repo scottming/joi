@@ -102,4 +102,3 @@ defmodule Joi.Type.String do
     {:ok, params}
   end
 end
-

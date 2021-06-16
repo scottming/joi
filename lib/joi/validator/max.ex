@@ -39,4 +39,3 @@ defmodule Joi.Validator.Max do
     Decimal.from_float(f)
   end
 end
-

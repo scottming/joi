@@ -83,4 +83,3 @@ defmodule Joi.Validator.CustomTest do
     end
   end
 end
-

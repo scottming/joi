@@ -35,4 +35,3 @@ defmodule Joi.Type.AtomTest do
     is_atom(value)
   end
 end
-

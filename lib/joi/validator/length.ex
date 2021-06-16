@@ -13,4 +13,3 @@ defmodule Joi.Validator.Length do
     {:ok, params}
   end
 end
-

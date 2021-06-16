@@ -24,4 +24,3 @@ defmodule Joi.Validator.MinLengthTest do
     end
   end
 end
-

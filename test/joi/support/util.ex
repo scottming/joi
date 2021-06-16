@@ -47,4 +47,3 @@ defmodule Joi.Support.Util do
     Module.safe_concat(Joi.Type, t |> Atom.to_string() |> Macro.camelize())
   end
 end
-

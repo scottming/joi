@@ -23,4 +23,3 @@ defmodule Joi.Validator.InclusionTest do
     end
   end
 end
-
