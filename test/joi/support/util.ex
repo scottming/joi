@@ -1,21 +1,5 @@
 defmodule Joi.Support.Util do
-  @doc """
-  Returns all types that Joi supported
-  """
-  def all_types() do
-    with {:ok, list} <- :application.get_key(:joi, :modules) do
-      list
-      |> Enum.filter(fn x ->
-        module_list = x |> Module.split()
-
-        # TODO: delete map when implemented
-        Enum.slice(module_list, 0..1) == ~w|Joi Type| &&
-          module_list not in [~w|Joi Type|, ~w|Joi Util|] &&
-          module_list != ~w|Joi Type Map|
-      end)
-      |> Enum.map(&(&1 |> Module.split() |> List.last() |> String.downcase() |> String.to_atom()))
-    end
-  end
+  defdelegate all_types, to: Joi.Util
 
   @doc """
   Returns a list of types that support the input validator
@@ -47,3 +31,4 @@ defmodule Joi.Support.Util do
     Module.safe_concat(Joi.Type, t |> Atom.to_string() |> Macro.camelize())
   end
 end
+

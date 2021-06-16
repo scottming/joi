@@ -1,7 +1,22 @@
 defmodule Joi.Util do
   defdelegate error(type, opts), to: Joi.Error, as: :new
 
-  @types [:boolean, :date, :datetime, :list, :map, :number, :string]
+  @doc """
+  Returns all types that Joi supported
+  """
+  def all_types() do
+    with {:ok, list} <- :application.get_key(:joi, :modules) do
+      list
+      |> Enum.filter(fn x ->
+        module_list = x |> Module.split()
+
+        # TODO: delete map when implemented
+        Enum.slice(module_list, 0..1) == ~w|Joi Type| && module_list not in [~w|Joi Type|, ~w|Joi Util|]
+        # && module_list != ~w|Joi Type Map|
+      end)
+      |> Enum.map(&(&1 |> Module.split() |> List.last() |> String.downcase() |> String.to_atom()))
+    end
+  end
 
   @doc """
   Return the real path of error
@@ -31,7 +46,7 @@ defmodule Joi.Util do
 
   defp all_values_are_list?(values), do: Enum.all?(values, &is_list/1)
 
-  defp all_types_are_validated?(values), do: Enum.all?(values, &(hd(&1) in @types))
+  defp all_types_are_validated?(values), do: Enum.all?(values, &(hd(&1) in all_types()))
 
   defp all_tail_options_are_keyword?(values) do
     validations = Enum.map(values, fn [_h | t] -> t end)
@@ -53,3 +68,4 @@ defmodule Joi.Util do
     length(value)
   end
 end
+

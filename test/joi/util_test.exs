@@ -19,7 +19,7 @@ defmodule Joi.UtilTest do
     end
 
     test "success: when with valid attrs" do
-      schema = %{id: [:string, max_length: 10], age: [:number, required: true]}
+      schema = %{id: [:string, max_length: 10], age: [:integer, required: true]}
       assert is_schema(schema) == true
     end
   end

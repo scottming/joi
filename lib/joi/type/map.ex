@@ -9,7 +9,8 @@ defmodule Joi.Type.Map do
     field = options[:path] |> List.last()
 
     %{
-      "#{@t}.base" => "#{field} must be a #{@t}"
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
     }
     |> Map.get(code)
   end
