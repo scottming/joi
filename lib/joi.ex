@@ -26,7 +26,8 @@ defmodule Joi do
 
     case data.joi_errors do
       [] -> {:ok, Map.drop(data, [:joi_errors])}
-      errors -> {:error, errors}
+      errors -> {:error, errors |> List.flatten()}
     end
   end
 end
+

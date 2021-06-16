@@ -17,7 +17,7 @@ defmodule Joi.Type.List do
   ]
 
   def message(code, options) do
-    field = options[:path] |> hd
+    field = options[:path] |> List.last
     # type = String.split(code, ".") |> List.last()
     limit = options[:limit]
 

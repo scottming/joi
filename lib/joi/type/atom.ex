@@ -12,7 +12,7 @@ defmodule Joi.Type.Atom do
   ]
 
   def message(code, options) do
-    field = options[:path] |> hd
+    field = options[:path] |> List.last
     inclusion = options[:inclusion]
 
     %{

@@ -10,7 +10,7 @@ defmodule Joi.Type.Datetime do
   ]
 
   def message(code, options) do
-    field = options[:path] |> hd
+    field = options[:path] |> List.last
 
     %{
       "#{@t}.required" => "#{field} is required",

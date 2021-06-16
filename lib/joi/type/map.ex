@@ -6,7 +6,7 @@ defmodule Joi.Type.Map do
   @default_options required: true, schema: nil
 
   def message(code, options) do
-    field = options[:path] |> hd
+    field = options[:path] |> List.last()
 
     %{
       "#{@t}.base" => "#{field} must be a #{@t}"
@@ -44,7 +44,7 @@ defmodule Joi.Type.Map do
 
   def validate_by_field_schema(field, params, %{schema: nil} = options) do
     case is_map(params[field]) do
-      true -> {:ok, params}
+      true -> {:ok, params[field]}
       false -> error("#{@t}.base", path: path(field, options), value: params[field])
     end
   end
@@ -59,3 +59,4 @@ defmodule Joi.Type.Map do
     end
   end
 end
+

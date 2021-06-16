@@ -14,7 +14,7 @@ defmodule Joi.Type.Integer do
   ]
 
   def message(code, options) do
-    field = options[:path] |> hd
+    field = options[:path] |> List.last
     limit = options[:limit]
     inclusion = options[:inclusion]
 
