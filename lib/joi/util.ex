@@ -35,6 +35,37 @@ defmodule Joi.Util do
     [field]
   end
 
+  @doc """
+  Append a parent_path to the options of schema's field
+  """
+  def append_parent_path_to(schema, parent_path) do
+    for {k, opts} <- schema do
+      {k, opts ++ [parent_path: parent_path]}
+    end
+    |> Enum.into(%{})
+  end
+
+  @doc """
+  Return a new parent path.
+
+  The parent path default is nil, the return a [parent_index] list by input field.
+  """
+  def parent_path(appended_path, options) when is_list(appended_path) do
+    if options[:parent_path] do
+      options[:parent_path] ++ appended_path
+    else
+      appended_path
+    end
+  end
+
+  def parent_path(appended_path, options) do
+    if options[:parent_path] do
+      options[:parent_path] ++ [appended_path]
+    else
+      [appended_path]
+    end
+  end
+
   def is_schema(schema) when is_map(schema) do
     values = Enum.map(schema, fn {_k, v} -> v end)
     all_values_are_list?(values) && all_types_are_validated?(values) && all_tail_options_are_keyword?(values)
