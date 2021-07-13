@@ -54,7 +54,7 @@ defmodule Joi.Validator.CustomTest do
       data = %{l: [1, 2, 2]}
       expected = "#{data[:l]} must be uniq"
       # TODO: modify number
-      schema = %{l: [:list, type: :number, f: &custom_function/2]}
+      schema = %{l: [:list, type: :integer, f: &custom_function/2]}
 
       assert Joi.validate(data, schema) == {:error, [expected]}
     end
@@ -63,7 +63,7 @@ defmodule Joi.Validator.CustomTest do
       data = %{l: [1, 2, 2]}
       expected = "uniq_error"
       # TODO: modify number
-      schema = %{l: [:list, type: :number, f: &custom_function(&1, &2, message: "uniq_error")]}
+      schema = %{l: [:list, type: :integer, f: &custom_function(&1, &2, message: "uniq_error")]}
 
       assert Joi.validate(data, schema) == {:error, [expected]}
     end

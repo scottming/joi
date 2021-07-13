@@ -5,7 +5,7 @@ defmodule Joi.Support.Util do
   Returns a list of types that support the input validator
 
   Examples: 
-    iex> types(validator)
+    iex> types_of(:min_length)
     [:string, atom, :list]
   """
   def types_by(validator) do

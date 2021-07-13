@@ -1,48 +1,37 @@
 defmodule Joi.Validator.MaxTest do
-  @moduledoc false
-
   use ExUnit.Case, async: true
   use ExUnitProperties
+  import Joi.Support.Util
 
-  describe "max/min validation" do
-    @field :field
-    @types [:integer, :float, :decimal]
+  @validator :max
+  @field :field
+  @types [:integer, :float, :decimal]
 
+  describe "max validation" do
     property "success: with valid attrs when validate max" do
-      check all value <- integer(), type <- member_of(@types), value <= 100 do
-        schema = %{@field => [type, max: 100]}
+      check all value <- negative_integer(), type <- member_of(@types) do
         data = %{@field => value}
-        assert {:ok, _} = Joi.validate(data, schema)
+        options = [max: -1]
+
+        module = atom_type_to_mod(type)
+        assert {:ok, _} = apply(module, :validate_field, [@field, data, options])
       end
     end
 
     property "errors: with invalid attrs when validate max" do
-      check all value <- integer(), type <- member_of(@types), value > -100 do
-        schema = %{@field => [type, max: -100]}
-        data = %{@field => value}
-        assert {:error, _} = Joi.validate(data, schema)
-      end
-    end
-
-    property "success: with valid attr when validate min" do
       check all value <- positive_integer(), type <- member_of(@types) do
-        schema = %{@field => [type, min: 1]}
         data = %{@field => value}
-        assert {:ok, _} = Joi.validate(data, schema)
-      end
-    end
+        options = [max: 0]
 
-    property "errors: with invalid attr when validate min" do
-      check all value <- negative_integer(), type <- member_of(@types) do
-        schema = %{@field => [type, min: 0]}
-        data = %{@field => value}
-        assert {:error, _} = Joi.validate(data, schema)
-        # TODO: assert error details
+        module = atom_type_to_mod(type)
+        assert {:error, %{type: t}} = apply(module, :validate_field, [@field, data, options])
+        assert t == "#{type}.#{@validator}"
       end
-    end
-
-    defp negative_integer() do
-      map(positive_integer(), &(&1 / -1))
     end
   end
+
+  defp negative_integer() do
+    map(positive_integer(), &(&1 / -1))
+  end
 end
+
