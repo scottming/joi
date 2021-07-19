@@ -9,6 +9,8 @@ This project is inspired by [sideway/joi](https://github.com/sideway/joi) and [l
 
 And the code of this repository is based on [lob/litmus](https://github.com/lob/litmus), but the API of this repository is completely different from litmus.
 
+<!-- MDOC !-->
+
 ## Background
 
 The community already has a lot of verification-related libraries, such as skooma, vex, but why write a new one?
@@ -38,7 +40,41 @@ Joi validates data against a predefined schema with the `Joi.validate/2` functio
 
 If the data is valid, the function returns `{:ok, data}`. The returned data will perform the transformation according to the provided schema.
 
-if the passed data does not match the type defined in the schema, the function returns `{:error, %{field: field, message: message, type: type, constraint: constraint}}`, When a field is received that is not specified in the provided schema, it does nothing and returns `{:ok, data}`.
+if the passed data does not match the type defined in the schema, the function returns `{:error, errors}`, the `errors` is a list of `Joi.Error`, that a struct contains four fields: 
+
+* `context`: map providing context of the error containing:
+  + `key`: key of the value that erred, equivalent to the last element of path.
+  + `value`: the value that failed validation.
+  + other error specific properties as described for each error code.
+* `message`: string with a description of the error.
+* `path`: list where each element is the accessor to the value where the error happened.
+* `type`: type of the error.
+  
+, When a field is received that is not specified in the provided schema, it does nothing and returns `{:ok, data}`.
+
+```elixir
+
+Examples:
+
+  iex> schema = %{a: [:integer]}
+  %{a: [:integer]}
+  iex> data1 = %{a: 1}
+  %{a: 1}
+  iex> Joi.validate(data1, schema)
+  {:ok, %{a: 1}}
+  iex> data2 = %{a: <<123>>}
+  iex> Joi.validate(data2, schema)
+  {:error,
+  [
+    %Joi.Error{
+      context: %{key: :a, value: "{"},
+      message: "a must be a integer",
+      path: [:a],
+      type: "integer.base"
+    }
+  ]}
+
+```
 
 ```elixir
 schema = %{

@@ -10,7 +10,7 @@ defmodule Joi.Validator.InclusionTest do
   @validator :inclusion
 
   test "types that support #{@validator}" do
-    assert_lists_equal(types_by(@validator), [:atom, :string, :integer, :float])
+    assert_lists_equal(types_by(@validator), [:atom, :string, :integer, :float, :decimal])
   end
 
   describe "validate inclusion" do

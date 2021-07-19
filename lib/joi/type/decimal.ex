@@ -17,12 +17,14 @@ defmodule Joi.Type.Decimal do
   def message(code, options) do
     field = options[:path] |> List.last
     limit = options[:limit]
+    inclusion = options[:inclusion]
 
     %{
       "#{@t}.required" => "#{field} is required",
       "#{@t}.base" => "#{field} must be a #{@t}",
       "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
-      "#{@t}.min" => "#{field} must be greater than or equal to #{limit}"
+      "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
     |> Map.get(code)
   end

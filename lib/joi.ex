@@ -1,7 +1,10 @@
 defmodule Joi do
-  @moduledoc """
-  Joi is a data validation library for Elixir.
-  """
+  @external_resource "README.md"
+
+  @moduledoc "README.md"
+             |> File.read!()
+             |> String.split("<!-- MDOC !-->")
+             |> Enum.fetch!(1)
 
   alias Joi.Type
 
@@ -9,7 +12,7 @@ defmodule Joi do
     data |> Map.put(:joi_errors, []) |> validate_all_fields(schema) |> parse_result()
   end
 
-  def validate_all_fields(data, schema) do
+  defp validate_all_fields(data, schema) do
     Enum.reduce(schema, {:ok, data}, fn {field, [type | options]}, {:ok, modified_data} ->
       case Type.validate(type, field, modified_data, options) do
         {:error, error} ->
@@ -21,7 +24,7 @@ defmodule Joi do
     end)
   end
 
-  def parse_result(result) do
+  defp parse_result(result) do
     {:ok, data} = result
 
     case data.joi_errors do
