@@ -16,25 +16,30 @@ defmodule Joi.Type.List do
     length: nil
   ]
 
-  def message(code, options) do
+  def message_map(options) do
     field = options[:path] |> List.last()
     limit = options[:limit]
     custom_type = options[:type]
     schema = options[:schema]
 
+    %{
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.length" => "#{field} must contain #{limit} items",
+      "#{@t}.max_length" => "#{field} must contain less than or equal to #{limit} items",
+      "#{@t}.min_length" => "#{field} must contain at least #{limit} items",
+      "#{@t}.type" => "#{custom_type} not supported",
+      "#{@t}.schema" => "#{schema} is invalid"
+    }
+  end
+
+  def message(code, options) do
+    field = options[:path] |> List.last()
+
     if sub_type(code) do
       "#{field} must be a list of #{sub_type(code)}"
     else
-      %{
-        "#{@t}.base" => "#{field} must be a #{@t}",
-        "#{@t}.required" => "#{field} is required",
-        "#{@t}.length" => "#{field} must contain #{limit} items",
-        "#{@t}.max_length" => "#{field} must contain less than or equal to #{limit} items",
-        "#{@t}.min_length" => "#{field} must contain at least #{limit} items",
-        "#{@t}.type" => "#{custom_type} not supported",
-        "#{@t}.schema" => "#{schema} is invalid"
-      }
-      |> Map.get(code)
+      message_map(options) |> Map.get(code)
     end
   end
 
@@ -136,4 +141,3 @@ defmodule Joi.Type.List do
     for {k, value} when k == :ok <- list, do: value
   end
 end
-

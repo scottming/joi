@@ -11,8 +11,8 @@ defmodule Joi.Type.Atom do
     required: true
   ]
 
-  def message(code, options) do
-    field = options[:path] |> List.last
+  def message_map(options) do
+    field = options[:path] |> List.last()
     inclusion = options[:inclusion]
 
     %{
@@ -20,7 +20,10 @@ defmodule Joi.Type.Atom do
       "#{@t}.required" => "#{field} is required",
       "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
-    |> Map.get(code)
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
   end
 
   def validate_field(field, params, options) when is_list(options) do

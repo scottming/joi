@@ -9,14 +9,17 @@ defmodule Joi.Type.Date do
     format: "iso8601"
   ]
 
-  def message(code, options) do
-    field = options[:path] |> List.last
+  def message_map(options) do
+    field = options[:path] |> List.last()
 
     %{
       "#{@t}.required" => "#{field} is required",
       "#{@t}.base" => "#{field} must be a valid ISO-8601 date"
     }
-    |> Map.get(code)
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
   end
 
   def validate_field(field, params, options) when is_list(options) do

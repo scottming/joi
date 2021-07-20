@@ -76,66 +76,205 @@ Examples:
 
 ```
 
-```elixir
-schema = %{
-  id: [:string, uuid: true],
-  username: [:string, min_length: 6],
-  pin: [:number, min: 1000, max: 9999],
-  new_user: [:boolean, truthy: ["1"], falsy: ["0"], required: false],
-  account_ids: [:list, type: :number, max_length: 3],
-  remember_me: [:boolean, required: false]
-}
-
-data = %{id: "c8ce4d74-fab8-44fc-90c2-736b8d27aa30", username: "user@123", pin: 1234, new_user: "1", account_ids: [1, 3, 9]}
-
-Joi.validate(data, schema)
-# {:ok,
-# %{
-#   account_ids: [1, 3, 9],
-#   id: "c8ce4d74-fab8-44fc-90c2-736b8d27aa30",
-#   new_user: "1",
-#   pin: 1234,
-#   username: "user@123"
-# }}
-
-Joi.validate(%{}, schema)
-# {:error,
-#  [
-#    %{
-#      constraint: true,
-#      field: :username,
-#      message: "username is required",
-#      type: "string.required"
-#    },
-#    %{
-#      constraint: true,
-#      field: :pin,
-#      message: "pin is required",
-#      type: "number.required"
-#    },
-#    %{
-#      constraint: true,
-#      field: :id,
-#      message: "id is required",
-#      type: "string.required"
-#    },
-#    %{
-#      constraint: true,
-#      field: :account_ids,
-#      message: "account_ids is required",
-#      type: "list.required"
-#    }
-#  ]}
-```
-
 ### Supported Types
 
-* `boolean`
-* `date`  
-* `datetime`
-* `list`
-* `number`
-* `string`
+* [`atom`](#Atom)
+* [`boolean`](#Boolean)
+* [`date`](#Date)
+* [`datetime`](#Datetime)
+* [`decimal`](#Decimal)
+* [`float`](#Float)
+* [`integer`](#Integer)
+* [`list`](#List)
+* [`map`](#Map)
+* [`string`](#String)
+
+#### Atom
+
+error types
+
+* `atom.base`
+* `atom.inclusion`
+
+  Additional local context properties:
+
+  ```elixir
+  %{inclusion: list()}
+  ```
+* `atom.required`
+
+#### Boolean
+
+error types
+
+* `boolean.base`
+* `boolean.required`
+
+#### Date
+
+error types
+
+* `date.base`
+* `date.required`
+
+#### Datetime
+
+error types
+
+* `datetime.base`
+* `datetime.required`
+
+#### Decimal
+
+error types
+
+* `decimal.base`
+* `decimal.inclusion`
+
+  Additional local context properties:
+
+  ```elixir
+  %{inclusion: list()}
+  ```
+* `decimal.max`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | interger()}
+  ```
+
+* `decimal.min`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | interger()}
+  ```
+* `decimal.required`
+
+#### Float
+
+error types
+
+* `float.base`
+* `float.inclusion`
+
+  Additional local context properties:
+
+  ```elixir
+  %{inclusion: list()}
+  ```
+* `float.max`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | interger()}
+  ```
+* `float.min`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | interger()}
+  ```
+* `float.required`
+
+#### Integer
+
+error types
+
+* `integer.base`
+* `integer.inclusion`
+
+  Additional local context properties:
+
+  ```elixir
+  %{inclusion: list()}
+  ```
+* `integer.max`
+  Additional local context properties:
+
+  ```elixir
+  %{limit: interger()}
+  ```
+* `integer.min`
+  Additional local context properties:
+
+  ```elixir
+  %{limit: interger()}
+  ```
+* `integer.required`
+
+#### List
+
+error types
+
+* `list.base`
+* `list.length`
+  Additional local context properties:
+
+  ```elixir
+  %{limit: interger()}
+  ```
+* `list.max_length`
+
+Additional local context properties:
+```elixir
+%{limit: interger()}
+```
+
+* `list.min_length`
+
+Additional local context properties:
+```elixir
+%{limit: interger()}
+```
+* `list.required`
+* `list.schema`
+* `list.type`
+
+#### Map
+
+error types
+
+* `map.base`
+* `map.required`
+
+#### String
+
+error types
+
+* `string.base`
+* `string.format`
+* `string.inclusion`
+  Additional local context properties:
+
+  ```elixir
+  %{inclusion: list()}
+  ```
+* `string.length`
+
+  Additional local context properties:
+  ```elixir
+  %{limit: interger()}
+  ```
+* `string.max_length`
+
+  Additional local context properties:
+  ```elixir
+  %{limit: interger()}
+  ```
+* `string.min_length`
+
+  Additional local context properties:
+  ```elixir
+  %{limit: interger()}
+  ```
+* `string.required`
+* `string.uuid`
+
 
 ### Custom functions
 

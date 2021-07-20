@@ -13,7 +13,7 @@ defmodule Joi.Type.Integer do
     max: nil
   ]
 
-  def message(code, options) do
+  def message_map(options) do
     field = options[:label] || options[:path] |> List.last()
     limit = options[:limit]
     inclusion = options[:inclusion]
@@ -25,7 +25,10 @@ defmodule Joi.Type.Integer do
       "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
       "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
-    |> Map.get(code)
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
   end
 
   def validate_field(field, params, options) when is_list(options) do
@@ -76,4 +79,3 @@ defmodule Joi.Type.Integer do
     end
   end
 end
-

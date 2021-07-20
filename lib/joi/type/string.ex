@@ -19,8 +19,8 @@ defmodule Joi.Type.String do
     uuid: nil
   ]
 
-  def message(code, options) do
-    field = options[:path] |> List.last
+  def message_map(options) do
+    field = options[:path] |> List.last()
     limit = options[:limit]
     inclusion = options[:inclusion]
 
@@ -35,7 +35,10 @@ defmodule Joi.Type.String do
       "#{@t}.format" => "#{field} must be in a valid format",
       "#{@t}.uuid" => "#{field} must be a uuid"
     }
-    |> Map.get(code)
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
   end
 
   def validate_field(field, params, options) when is_list(options) do

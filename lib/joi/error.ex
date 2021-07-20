@@ -6,7 +6,7 @@ defmodule Joi.Error do
     iex> %Joi.Error{
        type: "integer.min"
        path: [:field],
-       message: "field must be greater than or equal to 3}",
+       message: "field must be greater than or equal to 3",
        context: %{key: :field, value: nil},
     }}
   """

@@ -5,14 +5,17 @@ defmodule Joi.Type.Map do
   @t :map
   @default_options required: true, schema: nil
 
-  def message(code, options) do
+  def message_map(options) do
     field = options[:path] |> List.last()
 
     %{
       "#{@t}.base" => "#{field} must be a #{@t}",
       "#{@t}.required" => "#{field} is required"
     }
-    |> Map.get(code)
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
   end
 
   def validate_field(field, params, options) when is_list(options) do
@@ -45,4 +48,3 @@ defmodule Joi.Type.Map do
     end
   end
 end
-

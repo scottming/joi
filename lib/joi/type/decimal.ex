@@ -14,8 +14,8 @@ defmodule Joi.Type.Decimal do
     max: nil
   ]
 
-  def message(code, options) do
-    field = options[:path] |> List.last
+  def message_map(options) do
+    field = options[:path] |> List.last()
     limit = options[:limit]
     inclusion = options[:inclusion]
 
@@ -26,7 +26,10 @@ defmodule Joi.Type.Decimal do
       "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
       "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
-    |> Map.get(code)
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
   end
 
   def validate_field(field, params, options) when is_list(options) do
