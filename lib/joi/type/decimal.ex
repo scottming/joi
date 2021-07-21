@@ -62,8 +62,7 @@ defmodule Joi.Type.Decimal do
         {:ok, Map.put(params, field, Decimal.from_float(raw_value))}
 
       is_integer(raw_value) ->
-        value = raw_value |> Integer.to_string() |> string_to_float() |> Decimal.from_float()
-        {:ok, Map.put(params, field, value)}
+        {:ok, Map.put(params, field, Decimal.new(raw_value))}
 
       String.valid?(raw_value) && string_to_float(raw_value) ->
         value = string_to_float(raw_value) |> Decimal.from_float()

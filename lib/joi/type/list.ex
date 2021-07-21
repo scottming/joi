@@ -44,7 +44,7 @@ defmodule Joi.Type.List do
   end
 
   defp sub_type(code) do
-    last = String.split(code, ",") |> List.last()
+    last = String.split(code, ".") |> List.last() |> String.to_atom()
 
     if last in all_types() do
       last

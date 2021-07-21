@@ -54,8 +54,6 @@ if the passed data does not match the type defined in the schema, the function r
 
 ```elixir
 
-Examples:
-
   iex> schema = %{a: [:integer]}
   %{a: [:integer]}
   iex> data1 = %{a: 1}
@@ -112,9 +110,31 @@ error types
 
 #### Date
 
+
 error types
 
 * `date.base`
+
+  Examples:
+
+  ```elixir
+
+  iex> schema = %{day: [:date]}
+  %{day: [:date]}
+  iex> Joi.validate(%{day: "2021-07-20"}, schema)
+  {:ok, %{day: ~D[2021-07-20]}}
+  iex> Joi.validate(%{day: "20210720"}, schema)
+  {:error,
+  [
+    %Joi.Error{
+      context: %{key: :day, value: "20210720"},
+      message: "day must be a valid ISO-8601 date",
+      path: [:day],
+      type: "date.base"
+    }
+  ]}
+
+  ```
 * `date.required`
 
 #### Datetime
@@ -122,7 +142,28 @@ error types
 error types
 
 * `datetime.base`
-* `datetime.required`
+
+  Examples:
+
+  ```elixir
+
+  iex> schema = %{day: [:date]}
+  %{day: [:date]}
+  iex> Joi.validate(%{day: "2021-07-20"}, schema)
+  {:ok, %{day: ~D[2021-07-20]}}
+  iex> Joi.validate(%{day: "20210720"}, schema)
+  {:error,
+  [
+    %Joi.Error{
+      context: %{key: :day, value: "20210720"},
+      message: "day must be a valid ISO-8601 date",
+      path: [:day],
+      type: "date.base"
+    }
+  ]}
+
+  ```
+  * `datetime.required`
 
 #### Decimal
 
@@ -136,12 +177,76 @@ error types
   ```elixir
   %{inclusion: list()}
   ```
+
+  Examples:
+
+  ```elixir
+  iex> schema = %{d: [:decimal, inclusion: [Decimal.new(1)]]}
+  %{d: [:decimal, {:inclusion, [Decimal.new(1)]}]}
+  iex> Joi.validate(%{d: Decimal.new(2)}, schema)
+  {:error,
+  [
+    %Joi.Error{
+      context: %{inclusion: [Decimal.new(1)], key: :d, value: Decimal.new(2)},
+      message: "d must be one of #{inspect [Decimal.new(1)]}",
+      path: [:d],
+      type: "decimal.inclusion"
+    }
+  ]}
+  ```
 * `decimal.max`
 
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | interger()}
+  %{limit: float() | integer() | Decimal.t()}
+  ```
+
+  Examples:
+  ```elixir
+
+    iex> schema = %{n: [:decimal, max: 1]}
+    %{n: [:decimal, {:max, 1}]}
+    iex> Joi.validate(%{n: 0}, schema)
+    {:ok, %{n: Decimal.new(0)}}
+    iex> Joi.validate(%{n: "2"}, schema)
+    {:error,
+    [
+      %Joi.Error{
+        # string value will be converted to a float
+        context: %{key: :n, limit: Decimal.new(1), value: Decimal.from_float(2.0)}, 
+        message: "n must be less than or equal to 1",
+        path: [:n],
+        type: "decimal.max"
+      }
+    ]}
+    iex> # max also support Decimal.t()
+    iex> schema = %{n: [:decimal, max: Decimal.new(1)]}
+    %{n: [:decimal, {:max, Decimal.new(1)}]}
+    iex> Joi.validate(%{n: 2}, schema)
+    {:error,
+    [
+      %Joi.Error{
+        context: %{key: :n, limit: Decimal.new(1), value: Decimal.new(2)},
+        message: "n must be less than or equal to 1",
+        path: [:n],
+        type: "decimal.max"
+      }
+    ]}
+    iex> # max also support float
+    iex> schema = %{n: [:decimal, max: 1.1]}
+    %{n: [:decimal, {:max, 1.1}]}
+    iex> Joi.validate(%{n: 2}, schema)
+    {:error,
+    [
+      %Joi.Error{
+        context: %{key: :n, limit: Decimal.from_float(1.1), value: Decimal.new(2)},
+        message: "n must be less than or equal to 1.1",
+        path: [:n],
+        type: "decimal.max"
+      }
+    ]}
+
   ```
 
 * `decimal.min`
@@ -149,7 +254,7 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | interger()}
+  %{limit: float() | integer()}
   ```
 * `decimal.required`
 
@@ -170,14 +275,14 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | interger()}
+  %{limit: float() | integer()}
   ```
 * `float.min`
 
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | interger()}
+  %{limit: float() | integer()}
   ```
 * `float.required`
 
@@ -197,17 +302,54 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: interger()}
+  %{limit: integer()}
   ```
 * `integer.min`
   Additional local context properties:
 
   ```elixir
-  %{limit: interger()}
+  %{limit: integer()}
   ```
 * `integer.required`
 
 #### List
+
+list supports some special features, such as validation for each element:
+
+
+```elixir
+iex> schema = %{l: [:list, type: :integer]}
+%{l: [:list, {:type, :integer}]}
+iex> Joi.validate(%{l: [<<123>>]}, schema)
+{:error,
+ [
+   %Joi.Error{
+     context: %{key: :l, value: ["{"]},
+     message: "l must be a list of integer",
+     path: [:l],
+     type: "list.integer"
+   }
+ ]}
+```
+
+or a sub schema:
+
+```elixir
+iex> sub_schema = %{key: [:integer]}
+%{key: [:integer]}
+iex> schema = %{l: [:list, schema: sub_schema]}
+%{l: [:list, {:schema, %{key: [:integer]}}]}
+iex> Joi.validate(%{l: [%{key: 1}, %{key: <<123>>}]}, schema)
+{:error,
+ [
+   %Joi.Error{
+     context: %{key: :key, value: "{"},
+     message: "key must be a integer",
+     path: [:l, 1, :key],
+     type: "integer.base"
+   }
+ ]}
+```
 
 error types
 
@@ -216,26 +358,47 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: interger()}
+  %{limit: integer()}
   ```
 * `list.max_length`
 
 Additional local context properties:
 ```elixir
-%{limit: interger()}
+%{limit: integer()}
 ```
 
 * `list.min_length`
 
 Additional local context properties:
 ```elixir
-%{limit: interger()}
+%{limit: integer()}
 ```
 * `list.required`
 * `list.schema`
 * `list.type`
 
 #### Map
+
+
+`:map` also supports validation with sub schema: 
+
+```elixir
+iex> sub_schema = %{sub_key: [:integer]}
+%{sub_key: [:integer]}
+iex> schema = %{m: [:map, schema: sub_schema]}
+%{m: [:map, {:schema, %{sub_key: [:integer]}}]}
+iex> Joi.validate(%{m: %{sub_key: <<123>>}}, schema)
+{:error,
+ [
+   %Joi.Error{
+     context: %{key: :sub_key, value: "{"},
+     message: "sub_key must be a integer",
+     path: [:m, :sub_key],
+     type: "integer.base"
+   }
+ ]}
+
+```
 
 error types
 
@@ -258,19 +421,19 @@ error types
 
   Additional local context properties:
   ```elixir
-  %{limit: interger()}
+  %{limit: integer()}
   ```
 * `string.max_length`
 
   Additional local context properties:
   ```elixir
-  %{limit: interger()}
+  %{limit: integer()}
   ```
 * `string.min_length`
 
   Additional local context properties:
   ```elixir
-  %{limit: interger()}
+  %{limit: integer()}
   ```
 * `string.required`
 * `string.uuid`

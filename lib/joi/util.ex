@@ -21,7 +21,7 @@ defmodule Joi.Util do
   @doc """
   Returns a list of types that support the input validator
 
-  Examples: 
+  Examples:
     iex> types_of(:min_length)
     [:string, atom, :list]
   """
@@ -129,4 +129,3 @@ defmodule Joi.Util do
     length(value)
   end
 end
-
