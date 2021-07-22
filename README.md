@@ -444,28 +444,25 @@ error types
 There is nothing magical about custom functions, you just need to return the same format as Joi's type, and then use `:f` as the key for the custom function in the schema, so you can use one or more custom functions inside a type.
 
 ```elixir
-func = fn field, data -> 
-  case data[field] == 1 do
-    true -> {:ok, data}
-    false -> {
-      :error, 
-      %{type: "custom", field: field, message: "does not match the custom function", constraint: "custom"}
-    }
-  end
-end
+iex> import Joi.Util
+iex> func = fn field, data -> 
+...>   case data[field] == 1 do
+...>     true -> {:ok, data}
+...>     false -> error("custom", path: [field], value: data[field], message: "does not match the custom function")
+...>   end
+...> end
+iex> schema = %{id: [:integer, f: func]}
+iex> data = %{id: 2}
+iex> Joi.validate(data, schema)
+{:error, [
+  %Joi.Error{
+    context: %{key: :id, message: "does not match the custom function", value: 2},
+    message: "does not match the custom function",
+    path: [:id],
+    type: "custom"
+  }
+]}
 
-schema = %{id: [:number, f: func]}
-data = %{id: 2}
-Joi.validate(data, schema)
-# {:error,
-# [
-#   %{
-#     constraint: "custom",
-#     field: :id,
-#     message: "does not match the custom function",
-#     type: "custom"
-#   }
-# ]}
 ```
 
 
