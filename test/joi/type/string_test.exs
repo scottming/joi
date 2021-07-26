@@ -1,8 +1,29 @@
 defmodule Joi.Type.StringTest do
   use ExUnit.Case, async: true
   import Joi.Type.String
+  use ExUnitProperties
+  use Joi.Support.Properties.Generators
 
+  @t :string
   @field :field
+
+  use Joi.Support.ConvertTestHelper,
+    input: &random_input/0,
+    incorrect_input: &random_incorrect_input/0,
+    is_converted?: &is_value_string?/1
+
+  defp random_input() do
+    printable_string = StreamData.string(:printable, min_length: 0, max_length: 9)
+    [integer(), float(), boolean(), atom(:alphanumeric), printable_string] |> one_of()
+  end
+
+  defp random_incorrect_input() do
+    [tuple({integer(), float()}), list_of(binary())] |> one_of()
+  end
+
+  defp is_value_string?(data) do
+    String.valid?(data[@field])
+  end
 
   describe "regex validation" do
     test "success: when value matches the regex pattern" do
@@ -34,3 +55,4 @@ defmodule Joi.Type.StringTest do
     end
   end
 end
+

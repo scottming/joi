@@ -68,8 +68,11 @@ defmodule Joi.Type.String do
       value == nil ->
         {:ok, params}
 
-      is_binary(value) ->
+      String.valid?(value) ->
         {:ok, params}
+
+      is_atom(value) -> 
+        {:ok, %{params | field => Atom.to_string(value)}}
 
       is_number(value) or is_boolean(value) ->
         {:ok, Map.update!(params, field, &to_string/1)}
