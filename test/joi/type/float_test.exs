@@ -5,20 +5,23 @@ defmodule Joi.Type.FloatTest do
   import Joi.Type.Float
 
   @field :field
+  @t :float
 
-  property "check all input will convert to an float" do
-    check all value <- random_value(),
-              data = %{@field => value} do
-      assert {:ok, result} = validate_field(@field, data, [])
-      assert is_value_float?(result)
-    end
+  use Joi.Support.ConvertTestHelper,
+    input: &random_input/0,
+    incorrect_input: &random_incorrect_input/0,
+    is_converted?: &is_value_float?/1
+
+  defp random_input() do
+    [integer(), float(), decimal(), integer_string(), float_string()] |> one_of()
   end
 
-  defp random_value() do
-    [integer(), float(), decimal(), integer_string(), float_string()] |> one_of()
+  defp random_incorrect_input() do
+    [boolean(), bitstring()] |> one_of()
   end
 
   defp is_value_float?(m) do
     m |> Map.get(@field) |> is_float()
   end
 end
+

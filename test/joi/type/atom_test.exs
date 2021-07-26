@@ -6,21 +6,10 @@ defmodule Joi.Type.AtomTest do
   @t :atom
   @field :field
 
-  property "check all input will convert to an atom" do
-    check all value <- random_correct_input(),
-              data = %{@field => value} do
-      assert {:ok, result} = validate_field(@field, data, [])
-      assert is_value_atom?(result)
-    end
-  end
-
-  property "check all input returns a base error" do
-    check all value <- random_incorrect_input(),
-              data = %{@field => value} do
-      assert {:error, error} = validate_field(@field, data, [])
-      assert error.message == "#{@field} must be an #{@t}"
-    end
-  end
+  use Joi.Support.ConvertTestHelper,
+    input: &random_correct_input/0,
+    incorrect_input: &random_incorrect_input/0,
+    is_converted?: &is_value_atom?/1
 
   defp random_correct_input() do
     [string(:alphanumeric), boolean(), atom(:alphanumeric)] |> one_of()
@@ -35,3 +24,4 @@ defmodule Joi.Type.AtomTest do
     is_atom(value)
   end
 end
+
