@@ -72,10 +72,38 @@ defmodule Joi.Type.Integer do
     end
   end
 
-  defp string_to_integer(str) do
+  @doc """
+  Returns a integer when input a integer string or float string, others, Returns `nil`
+
+  Examples: 
+    iex> string_to_integer("1")
+    1
+    iex> string_to_integer("01")
+    1
+    iex> string_to_integer("01k")
+    nil
+    iex> string_to_integer("1k")
+    nil
+    iex> string_to_integer("1.1")
+    1
+    iex> string_to_integer("1.1k")
+    nil
+  """
+  def string_to_integer(str) do
     case Integer.parse(str) do
-      {num, _} -> num
-      _ -> nil
+      # integer string, like "1", "2"
+      {num, ""} ->
+        num
+
+      {num, maybe_float} ->
+        case Float.parse("0" <> maybe_float) do
+          {float, ""} when is_float(float) -> num
+          _ -> nil
+        end
+
+      _ ->
+        nil
     end
   end
 end
+

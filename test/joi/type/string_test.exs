@@ -36,7 +36,13 @@ defmodule Joi.Type.StringTest do
       data = %{@field => "x@##1"}
       options = [regex: ~r/^[a-zA-Z0-9_]*$/]
       assert {:error, error} = validate_field(@field, data, options)
-      assert error.message == "#{@field} must be in a valid format"
+
+      assert error == %Joi.Error{
+               context: %{key: @field, regex: ~r/^[a-zA-Z0-9_]*$/, value: "x@##1"},
+               message: "#{@field} must be in a valid format",
+               path: [@field],
+               type: "string.format"
+             }
     end
   end
 
@@ -51,7 +57,13 @@ defmodule Joi.Type.StringTest do
       data = %{field: "12345"}
       options = [uuid: true]
       assert {:error, error} = validate_field(@field, data, options)
-      assert error.message == "#{@field} must be a uuid"
+
+      assert error == %Joi.Error{
+               context: %{key: @field, value: "12345"},
+               message: "#{@field} must be a uuid",
+               path: [@field],
+               type: "string.uuid"
+             }
     end
   end
 end

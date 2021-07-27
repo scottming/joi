@@ -1,11 +1,14 @@
 defmodule Joi.Type.IntegerTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
-  use Joi.Support.Properties.Generators
+  doctest Joi.Type.Integer, import: true
+
   import Joi.Type.Integer
 
   @t :integer
   @field :field
+
+  use Joi.Support.Properties.Generators
 
   use Joi.Support.ConvertTestHelper,
     input: &random_input/0,

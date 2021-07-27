@@ -2,6 +2,7 @@ defmodule Joi.Type.BooleanTest do
   use ExUnit.Case, async: true
   import Joi.Type.Boolean
 
+  @t :boolean
   @field :field
 
   describe "truthy validation" do
@@ -18,7 +19,13 @@ defmodule Joi.Type.BooleanTest do
     test "error: when value is not in truthy" do
       data = %{@field => 1}
       assert {:error, error} = validate_field(@field, data, [])
-      assert error.message == "#{@field} must be a boolean"
+
+      assert error == %Joi.Error{
+               context: %{key: @field, value: 1},
+               message: "#{@field} must be a #{@t}",
+               path: [@field],
+               type: "#{@t}.base"
+             }
     end
   end
 
@@ -36,7 +43,13 @@ defmodule Joi.Type.BooleanTest do
     test "error: when value is not in falsy" do
       data = %{@field => 1}
       assert {:error, error} = validate_field(@field, data, [])
-      assert error.message == "#{@field} must be a boolean"
+      assert error == %Joi.Error{
+               context: %{key: @field, value: 1},
+               message: "#{@field} must be a #{@t}",
+               path: [@field],
+               type: "#{@t}.base"
+             }
     end
   end
 end
+

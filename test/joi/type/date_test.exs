@@ -2,7 +2,7 @@ defmodule Joi.Type.DateTest do
   use ExUnit.Case, async: true
   import Joi.Type.Date
 
-  # @t :date
+  @t :date
   @field :field
 
   @correct_date_examples ["1990-05-30", ~D[1990-05-31]]
@@ -19,8 +19,18 @@ defmodule Joi.Type.DateTest do
 
   for i <- @incorrect_date_examples do
     test "error: when input #{i}" do
-      data = %{@field => unquote(i |> Macro.escape())}
-      assert {:error, _} = validate_field(@field, data, [])
+      value = unquote(Macro.escape(i))
+      data = %{@field => value}
+
+      assert {:error, error} = validate_field(@field, data, [])
+
+      assert error == %Joi.Error{
+               context: %{key: @field, value: value},
+               message: "#{@field} must be a valid ISO-8601 date",
+               path: [@field],
+               type: "#{@t}.base"
+             }
     end
   end
 end
+

@@ -3,7 +3,7 @@ defmodule Joi.Type.DatetimeTest do
 
   import Joi.Type.Datetime
 
-  # @t :datetime
+  @t :datetime
   @field :field
 
   @correct_datetime_examples [~U[2021-05-31 06:57:59.330819Z], "2021-05-31 06:57:59.330818Z"]
@@ -20,8 +20,17 @@ defmodule Joi.Type.DatetimeTest do
 
   for i <- @incorrect_datetime_examples do
     test "error: when input #{i}" do
-      data = %{@field => unquote(i |> Macro.escape())}
-      assert {:error, _} = validate_field(@field, data, [])
+      value = unquote(Macro.escape(i))
+      data = %{@field => value}
+      assert {:error, error} = validate_field(@field, data, [])
+
+      assert error == %Joi.Error{
+               context: %{key: @field, value: value},
+               message: "#{@field} must be a valid ISO-8601 datetime",
+               path: [@field],
+               type: "#{@t}.base"
+             }
     end
   end
 end
+
