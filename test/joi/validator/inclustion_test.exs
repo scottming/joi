@@ -14,12 +14,22 @@ defmodule Joi.Validator.InclusionTest do
   end
 
   describe "validate inclusion" do
-    for t <- types_by("inclusion") do
-      test "error: when type is #{t}, inclusion is #{inspect(@inclusion)}" do
-        data = %{@field => 1}
-        type_module = atom_type_to_mod(unquote(t))
-        assert {:error, _} = apply(type_module, :validate_field, [@field, data, [inclusion: @inclusion]])
+    for type <- types_by("inclusion") do
+      test "error: when type is #{type}, inclusion is #{inspect(@inclusion)}" do
+        data = %{@field => "1"}
+        type_module = atom_type_to_mod(unquote(type))
+        assert {:error, error} = apply(type_module, :validate_field, [@field, data, [inclusion: @inclusion]])
+
+        assert %Joi.Error{
+                 context: %{inclusion: @inclusion, key: :field, value: _value},
+                 message: "field must be one of [:fake_inclusion]",
+                 path: [:field],
+                 type: error_type
+               } = error
+
+        assert error_type == "#{unquote(type)}.inclusion"
       end
     end
   end
 end
+

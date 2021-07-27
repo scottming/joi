@@ -29,8 +29,17 @@ defmodule Joi.Validator.MinTest do
         options = [min: 0]
 
         module = atom_type_to_mod(type)
-        assert {:error, %{type: t}} = apply(module, :validate_field, [@field, data, options])
-        assert t == "#{type}.#{@validator}"
+        assert {:error, error} = apply(module, :validate_field, [@field, data, options])
+
+        assert %Joi.Error{
+                 context: %{key: :field, limit: limit, value: _value},
+                 message: "field must be greater than or equal to 0",
+                 path: [:field],
+                 type: error_type
+               } = error
+
+        assert limit in [Decimal.new(0), 0]
+        assert error_type == "#{type}.#{@validator}"
       end
     end
   end

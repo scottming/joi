@@ -12,13 +12,29 @@ defmodule Joi.Validator.LengthTest do
   end
 
   describe "validate length" do
-    for {t, value} <- [string: "123", list: [1, 2, 3]] do
-      test "error: when type is #{t}, length is #{@length}, and value is #{inspect(value)}" do
-        data = %{@field => unquote(value)}
-        type_module = atom_type_to_mod(unquote(t))
-        assert {:error, error} = apply(type_module, :validate_field, [@field, data, [length: @length]])
-        assert error.type == "#{unquote(t)}.#{@validator}"
-      end
+    test "error: when type is `string`, length is #{@length}, and value is \"123\"" do
+      data = %{@field => "123"}
+      assert {:error, error} = apply(Joi.Type.String, :validate_field, [@field, data, [length: @length]])
+
+      assert error == %Joi.Error{
+               context: %{key: :field, limit: 2, value: "123"},
+               message: "field length must be 2 characters",
+               path: [:field],
+               type: "string.length"
+             }
+    end
+
+    test "error: when type is `list`, length is #{@length}, and value is [1, 2, 3]" do
+      data = %{@field => [1, 2, 3]}
+      assert {:error, error} = apply(Joi.Type.List, :validate_field, [@field, data, [length: @length]])
+
+      assert error == %Joi.Error{
+               context: %{key: :field, limit: 2, value: [1, 2, 3]},
+               message: "field must contain 2 items",
+               path: [:field],
+               type: "list.length"
+             }
     end
   end
 end
+
