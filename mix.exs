@@ -1,52 +1,46 @@
 defmodule Joi.MixProject do
   use Mix.Project
 
-  @github_url "https://github.com/scottming/joi"
+  @version "0.2.0"
 
   def project do
     [
       app: :joi,
-      version: "0.1.5",
+      version: @version,
       elixir: "~> 1.8",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      dialyzer: [
-        plt_add_deps: :apps_direct,
-        plt_add_apps: [:plug],
-        ignore_warnings: ".dialyzer_ignore"
-      ],
-
-      # Docs
-      name: "joi",
-      description: "Data validation in elixir",
-      source_url: @github_url,
-      homepage_url: @github_url,
-      docs: [
-        main: "readme",
-        extras: ["README.md"]
-      ],
-      package: [
-        files: ~w(mix.exs lib LICENSE* README.md CHANGELOG.md),
-        maintainers: ["Lob", "ScottMing"],
-        licenses: ["MIT"],
-        links: %{
-          "GitHub" => @github_url
-        }
-      ],
-
-      # ExCoveralls
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.travis": :test,
-        "coveralls.html": :test
-      ],
-      elixirc_paths: elixirc_paths(Mix.env())
+      description: description(),
+      package: package(),
+      name: "Joi",
+      source_url: "https://github.com/scottming/joi",
+      docs: docs()
     ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/joi/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp description() do
+    "Data validation in elixir"
+  end
+
+  defp package() do
+    [
+      name: "joi",
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/scottming/joi"}
+    ]
+  end
+
+  defp docs() do
+    [
+      source_ref: "v#{@version}",
+      main: "Joi",
+      extras: ["README.md"]
+    ]
+  end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -61,10 +55,11 @@ defmodule Joi.MixProject do
       {:elixir_uuid, "~> 1.2"},
       {:decimal, "~> 2.0.0"},
       {:stream_data, "~> 0.5", only: [:test, :dev]},
-      {:ex_doc, "~> 0.22", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.25.0", only: :dev, runtime: false},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.11", only: :test},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:assertions, "~> 0.10", only: :test}
     ]
   end
 end

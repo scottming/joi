@@ -1,19 +1,15 @@
 defmodule Joi.Validator.Inclusion do
   import Joi.Util
 
-  def inclusion_validate(type, field, params, %{inclusion: inclusion}) do
-    case params[field] in inclusion do
+  def inclusion_validate(type, field, params, %{inclusion: inclusion} = options) do
+    value = params[field]
+
+    case value in inclusion do
       true ->
         {:ok, params}
 
       false ->
-        error_message(
-          field,
-          params,
-          "must be one of #{inspect(inclusion)}",
-          "#{type}.inclusion",
-          inclusion
-        )
+        error("#{type}.inclusion", path: path(field, options), value: value, inclusion: inclusion)
     end
   end
 

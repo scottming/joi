@@ -5,9 +5,26 @@ defmodule Joi.Type.Atom do
   import Joi.Validator.Skipping
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
 
+  @t :atom
+
   @default_options [
     required: true
   ]
+
+  def message_map(options) do
+    field = options[:path] |> List.last()
+    inclusion = options[:inclusion]
+
+    %{
+      "#{@t}.base" => "#{field} must be an #{@t}",
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
+    }
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -15,33 +32,40 @@ defmodule Joi.Type.Atom do
   end
 
   def validate_field(field, params, options) do
-    unless_skipping(:atom, field, params, options) do
+    unless_skipping(@t, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- inclusion_validate(:atom, field, params, options) do
+           {:ok, params} <- inclusion_validate(@t, field, params, options) do
         {:ok, params}
       end
     end
   end
 
-  def convert(field, params, _options) do
+  @doc """
+  Returns {:ok, atom} when convert is true
+
+  These types of conversions are supported:
+    * string
+    * boolean
+    * atom
+  """
+  def convert(field, params, options) do
+    value = params[field]
+
     cond do
-      params[field] == nil ->
+      value == nil ->
         {:ok, params}
 
-      String.valid?(params[field]) ->
+      String.valid?(value) ->
         {:ok, Map.update!(params, field, &string_to_atom/1)}
 
-      is_number(params[field]) ->
-        {:ok, Map.update!(params, field, &(&1 |> to_string() |> string_to_atom()))}
-
-      is_boolean(params[field]) ->
+      is_boolean(value) ->
         {:ok, params}
 
-      is_atom(params[field]) ->
+      is_atom(value) ->
         {:ok, params}
 
       true ->
-        error_message(field, params, "#{field} must be a atom", "atom")
+        error("#{@t}.base", path: path(field, options), value: value)
     end
   end
 

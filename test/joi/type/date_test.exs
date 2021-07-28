@@ -1,85 +1,36 @@
 defmodule Joi.Type.DateTest do
   use ExUnit.Case, async: true
-  alias Joi.Type
+  import Joi.Type.Date
 
-  @field "start_date"
-  describe "validate_field/3" do
-    test "convert a string to a date" do
-      data = %{@field => "1990-05-01"}
-      {:ok, expected_date} = Date.from_iso8601(data[@field])
-      expected_data = %{@field => expected_date}
-      options = []
-      assert Type.Date.validate_field(@field, data, options) == {:ok, expected_data}
+  @t :date
+  @field :field
+
+  @correct_date_examples ["1990-05-30", ~D[1990-05-31]]
+
+  for i <- @correct_date_examples do
+    test "success: when input #{i}" do
+      data = %{@field => unquote(i |> Macro.escape())}
+      assert {:ok, result} = validate_field(@field, data, [])
+      assert result[@field] in [~D[1990-05-31], ~D[1990-05-30]]
     end
+  end
 
-    test "does not alter nil" do
-      data = %{@field => nil}
-      options = [required: false]
+  @incorrect_date_examples ["2018-06-01T06:32:00Z", 1_622_443_538, ~U[2021-05-31 06:57:59.330819Z]]
 
-      assert Type.Date.validate_field(@field, data, options) == {:ok, data}
-    end
+  for i <- @incorrect_date_examples do
+    test "error: when input #{i}" do
+      value = unquote(Macro.escape(i))
+      data = %{@field => value}
 
-    test "allows Date" do
-      {:ok, date} = Date.from_iso8601("1999-01-05")
-      data = %{@field => date}
-      options = []
+      assert {:error, error} = validate_field(@field, data, [])
 
-      assert Type.Date.validate_field(@field, data, options) == {:ok, data}
-    end
-
-    test "errors when required date is not provided" do
-      data = %{}
-
-      options = []
-
-      assert Type.Date.validate_field(@field, data, options) ==
-               {:error,
-                %{
-                  constraint: true,
-                  field: "start_date",
-                  value: data[@field],
-                  message: "start_date is required",
-                  type: "date.required"
-                }}
-    end
-
-    test "errors when the value is not a string" do
-      data = %{@field => 1234}
-
-      options = []
-
-      assert Type.Date.validate_field(@field, data, options) ==
-               {:error,
-                %{
-                  constraint: "date",
-                  value: data[@field],
-                  field: @field,
-                  message: "start_date must be a valid ISO-8601 date",
-                  type: "date"
-                }}
-    end
-
-    test "errors when the value is not in an ISO-8601 date with timezone format" do
-      data = %{@field => "2018-06-01T06:32:00Z"}
-
-      options = []
-
-      assert Type.Date.validate_field(@field, data, options) ==
-               {:error,
-                %{
-                  constraint: "date",
-                  value: data[@field],
-                  field: @field,
-                  message: "start_date must be a valid ISO-8601 date",
-                  type: "date"
-                }}
-    end
-
-    test "does not error if the field is not provided and not required" do
-      field = "id"
-      data = %{}
-      options = [required: false]
-      assert Type.Date.validate_field(field, data, options) == {:ok, data}
+      assert error == %Joi.Error{
+               context: %{key: @field, value: value},
+               message: "#{@field} must be a valid ISO-8601 date",
+               path: [@field],
+               type: "#{@t}.base"
+             }
     end
   end
 end
+

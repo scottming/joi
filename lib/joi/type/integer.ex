@@ -5,11 +5,31 @@ defmodule Joi.Type.Integer do
   import Joi.Validator.Min, only: [min_validate: 4]
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
 
+  @t :integer
+
   @default_options [
     required: true,
     min: nil,
     max: nil
   ]
+
+  def message_map(options) do
+    field = options[:label] || options[:path] |> List.last()
+    limit = options[:limit]
+    inclusion = options[:inclusion]
+
+    %{
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
+      "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
+    }
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -30,7 +50,7 @@ defmodule Joi.Type.Integer do
     end
   end
 
-  defp convert(field, params, _option) do
+  defp convert(field, params, options) do
     # NOTE: do not convert decimal
     raw_value = params[field]
 
@@ -48,14 +68,42 @@ defmodule Joi.Type.Integer do
         {:ok, Map.put(params, field, string_to_integer(raw_value))}
 
       true ->
-        error_message(field, params, "#{field} must be a integer", "integer")
+        error("#{@t}.base", path: path(field, options), value: raw_value)
     end
   end
 
-  defp string_to_integer(str) do
+  @doc """
+  Returns a integer when input a integer string or float string, others, Returns `nil`
+
+  Examples: 
+    iex> string_to_integer("1")
+    1
+    iex> string_to_integer("01")
+    1
+    iex> string_to_integer("01k")
+    nil
+    iex> string_to_integer("1k")
+    nil
+    iex> string_to_integer("1.1")
+    1
+    iex> string_to_integer("1.1k")
+    nil
+  """
+  def string_to_integer(str) do
     case Integer.parse(str) do
-      {num, _} -> num
-      _ -> nil
+      # integer string, like "1", "2"
+      {num, ""} ->
+        num
+
+      {num, maybe_float} ->
+        case Float.parse("0" <> maybe_float) do
+          {float, ""} when is_float(float) -> num
+          _ -> nil
+        end
+
+      _ ->
+        nil
     end
   end
 end
+

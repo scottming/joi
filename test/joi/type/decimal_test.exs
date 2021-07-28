@@ -5,18 +5,14 @@ defmodule Joi.Type.DecimalTest do
   import Joi.Type.Decimal
 
   @field :field
+  @t :decimal
 
-  property "check all input will convert to an float" do
-    check all(
-            value <- random_value(),
-            data = %{@field => value}
-          ) do
-      assert {:ok, result} = validate_field(@field, data, [])
-      assert is_value_decimal?(result)
-    end
-  end
+  use Joi.Support.ConvertTestHelper,
+    input: &random_input/0,
+    incorrect_input: &random_incorrect_input/0,
+    is_converted?: &is_value_decimal?/1
 
-  defp random_value() do
+  defp random_input() do
     integer_string = map(integer(), &Integer.to_string/1)
     float_string = map(float(), &Float.to_string/1)
     decimal = map(float(), &Decimal.from_float/1)
@@ -24,7 +20,12 @@ defmodule Joi.Type.DecimalTest do
     [integer(), float(), integer_string, float_string, decimal] |> one_of()
   end
 
+  defp random_incorrect_input() do
+    [boolean(), bitstring()] |> one_of()
+  end
+
   defp is_value_decimal?(m) do
     m |> Map.get(@field) |> Decimal.is_decimal()
   end
 end
+

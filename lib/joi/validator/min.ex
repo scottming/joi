@@ -2,26 +2,20 @@ defmodule Joi.Validator.Min do
   import Joi.Util
   import Joi.Validator.Max, only: [to_decimal: 1]
 
-  def min_validate(type, field, params, %{min: min})
+  def min_validate(type, field, params, %{min: min} = options)
       when type in [:float, :integer] and not is_nil(min) do
-    raw_value = params[field]
+    value = params[field]
 
-    case raw_value >= min do
+    case value >= min do
       true ->
         {:ok, params}
 
       false ->
-        error_message(
-          field,
-          params,
-          "#{field} must be gather than or equal to #{min}",
-          "#{type}.min",
-          min
-        )
+        error("#{type}.min", path: path(field, options), value: value, limit: min)
     end
   end
 
-  def min_validate(:decimal, field, params, %{min: min}) when not is_nil(min) do
+  def min_validate(:decimal, field, params, %{min: min} = options) when not is_nil(min) do
     min = min |> to_decimal()
     value = params[field]
 
@@ -30,13 +24,7 @@ defmodule Joi.Validator.Min do
         {:ok, params}
 
       false ->
-        error_message(
-          field,
-          params,
-          "#{field} must be gather than or equal to #{min}",
-          "decimal.min",
-          min
-        )
+        error("decimal.min", path: path(field, options), value: value, limit: min)
     end
   end
 

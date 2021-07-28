@@ -2,9 +2,25 @@ defmodule Joi.Type.Date do
   import Joi.Validator.Skipping
   import Joi.Util
 
+  @t :date
+
   @default_options [
-    required: true
+    required: true,
+    format: "iso8601"
   ]
+
+  def message_map(options) do
+    field = options[:path] |> List.last()
+
+    %{
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.base" => "#{field} must be a valid ISO-8601 date"
+    }
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
+  end
 
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
@@ -20,30 +36,31 @@ defmodule Joi.Type.Date do
     end
   end
 
-  def convert(field, params, _options) do
+  def convert(field, params, options) do
+    value = params[field]
+
     cond do
-      params[field] == nil ->
+      value == nil ->
         {:ok, params}
 
-      is_binary(params[field]) ->
-        case Date.from_iso8601(params[field]) do
-          {:ok, date} -> {:ok, %{params | field => date}}
-          _ -> error_tuple(field, params)
+      is_binary(value) ->
+        case Date.from_iso8601(value) do
+          {:ok, date} ->
+            {:ok, %{params | field => date}}
+
+          _ ->
+            error("#{@t}.base", path: path(field, options), value: value)
         end
 
-      date?(params[field]) ->
+      date?(value) ->
         {:ok, params}
 
       true ->
-        error_tuple(field, params)
+        error("#{@t}.base", path: path(field, options), value: value)
     end
   end
 
   defp date?(%Date{}), do: true
 
   defp date?(_), do: false
-
-  defp error_tuple(field, params) do
-    error_message(field,  params, "#{field} must be a valid ISO-8601 date", "date")
-  end
 end

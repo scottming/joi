@@ -4,6 +4,7 @@ defmodule Joi.Type.UnknownTypeTest do
   test "unknown type" do
     data = %{id: 1}
     schema = %{id: [:int]}
-    assert Joi.validate(data, schema) == {:error, ["unknown type: #{:int}"]}
+    assert_raise RuntimeError, "unknown type: #{:int}", fn -> Joi.validate(data, schema) end
   end
 end
+

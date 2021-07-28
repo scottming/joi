@@ -1,91 +1,36 @@
-defmodule Joi.Type.DateTimeTest do
+defmodule Joi.Type.DatetimeTest do
   use ExUnit.Case, async: true
 
-  alias Joi.Type
+  import Joi.Type.Datetime
 
-  @field "start_datetime"
+  @t :datetime
+  @field :field
 
-  describe "validate_field/3" do
-    test "converts a string to a datetime" do
-      data = %{@field => "1990-05-01T06:32:00Z"}
+  @correct_datetime_examples [~U[2021-05-31 06:57:59.330819Z], "2021-05-31 06:57:59.330818Z"]
 
-      {:ok, expected_date_time, _} = DateTime.from_iso8601(data[@field])
-      expected_data = %{@field => expected_date_time}
-
-      options = []
-
-      assert Type.DateTime.validate_field(@field, data, options) == {:ok, expected_data}
+  for i <- @correct_datetime_examples do
+    test "success: when input #{i}" do
+      data = %{@field => unquote(Macro.escape(i))}
+      assert {:ok, result} = validate_field(@field, data, [])
+      assert result[@field] in [~U[2021-05-31 06:57:59.330819Z], ~U[2021-05-31 06:57:59.330818Z]]
     end
+  end
 
-    test "does not alter nil" do
-      data = %{@field => nil}
-      options = [required: false]
+  @incorrect_datetime_examples ["1990-05-30", ~D[1990-05-31], 1_622_443_538, "2021-05-31 06:57:59"]
 
-      assert Type.DateTime.validate_field(@field, data, options) == {:ok, data}
-    end
+  for i <- @incorrect_datetime_examples do
+    test "error: when input #{i}" do
+      value = unquote(Macro.escape(i))
+      data = %{@field => value}
+      assert {:error, error} = validate_field(@field, data, [])
 
-    test "allows DateTimes" do
-      {:ok, datetime, _} = DateTime.from_iso8601("1999-01-05T05:00:00Z")
-      data = %{@field => datetime}
-
-      options = []
-
-      assert Type.DateTime.validate_field(@field, data, options) == {:ok, data}
-    end
-
-    test "errors when required datetime is not provided" do
-      data = %{}
-
-      options = []
-
-      assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error,
-                %{
-                  constraint: true,
-                  field: "start_datetime",
-                  value: data[@field],
-                  message: "start_datetime is required",
-                  type: "datetime.required"
-                }}
-    end
-
-    test "errors when the value is not a string" do
-      data = %{@field => 1234}
-
-      options = []
-
-      assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error,
-                %{
-                  field: @field,
-                  value: data[@field],
-                  message: "start_datetime must be a valid ISO-8601 datetime",
-                  type: "datetime",
-                  constraint: "datetime"
-                }}
-    end
-
-    test "errors when the value is not in an ISO-8601 datetime with timezone format" do
-      data = %{@field => "2018-06-01"}
-
-      options = []
-
-      assert Type.DateTime.validate_field(@field, data, options) ==
-               {:error,
-                %{
-                  field: @field,
-                  value: data[@field],
-                  message: "start_datetime must be a valid ISO-8601 datetime",
-                  type: "datetime",
-                  constraint: "datetime"
-                }}
-    end
-
-    test "does not error if the field is not provided and not required" do
-      field = "id"
-      data = %{}
-      options = [required: false]
-      assert Type.DateTime.validate_field(field, data, options) == {:ok, data}
+      assert error == %Joi.Error{
+               context: %{key: @field, value: value},
+               message: "#{@field} must be a valid ISO-8601 datetime",
+               path: [@field],
+               type: "#{@t}.base"
+             }
     end
   end
 end
+

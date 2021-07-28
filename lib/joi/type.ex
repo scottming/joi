@@ -10,17 +10,16 @@ defmodule Joi.Type do
 
     cond do
       type == :atom -> Type.Atom.validate_field(field, data, options)
-      type == :number -> Type.Number.validate_field(field, data, options)
       type == :decimal -> Type.Decimal.validate_field(field, data, options)
       type == :float -> Type.Float.validate_field(field, data, options)
       type == :integer -> Type.Integer.validate_field(field, data, options)
       type == :string -> Type.String.validate_field(field, data, options)
       type == :list -> Type.List.validate_field(field, data, options)
       type == :boolean -> Type.Boolean.validate_field(field, data, options)
-      type == :datetime -> Type.DateTime.validate_field(field, data, options)
+      type == :datetime -> Type.Datetime.validate_field(field, data, options)
       type == :date -> Type.Date.validate_field(field, data, options)
-      # type == :map -> Type.Map.validate_field(field, data, options)
-      type -> {:error, "unknown type: #{type}"}
+      type == :map -> Type.Map.validate_field(field, data, options)
+      type -> raise "unknown type: #{type}"
     end
     |> custom_validate(field, custom_function_list, options)
   end

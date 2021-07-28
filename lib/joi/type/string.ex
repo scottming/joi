@@ -4,6 +4,11 @@ defmodule Joi.Type.String do
   import Joi.Validator.Skipping
   import Joi.Util
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
+  import Joi.Validator.MaxLength, only: [max_length_validate: 4]
+  import Joi.Validator.MinLength, only: [min_length_validate: 4]
+  import Joi.Validator.Length, only: [length_validate: 4]
+
+  @t :string
 
   @default_options [
     required: true,
@@ -14,6 +19,28 @@ defmodule Joi.Type.String do
     uuid: nil
   ]
 
+  def message_map(options) do
+    field = options[:path] |> List.last()
+    limit = options[:limit]
+    inclusion = options[:inclusion]
+
+    %{
+      "#{@t}.base" => "#{field} must be a #{@t}",
+      "#{@t}.required" => "#{field} is required",
+      "#{@t}.max_length" => "#{field} length must be less than or equal to #{limit} characters long",
+      "#{@t}.min_length" => "#{field} length must be at least #{limit} characters long",
+      "#{@t}.length" => "#{field} length must be #{limit} characters",
+      "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}",
+      # TODO: .format or .regex
+      "#{@t}.format" => "#{field} must be in a valid format",
+      "#{@t}.uuid" => "#{field} must be a uuid"
+    }
+  end
+
+  def message(code, options) do
+    message_map(options) |> Map.get(code)
+  end
+
   def validate_field(field, params, options) when is_list(options) do
     options = Keyword.merge(@default_options, options) |> Enum.into(%{})
     validate_field(field, params, options)
@@ -22,10 +49,10 @@ defmodule Joi.Type.String do
   def validate_field(field, params, options) do
     unless_skipping(:string, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- inclusion_validate(:string, field, params, options),
-           {:ok, params} <- min_length_validate(field, params, options),
-           {:ok, params} <- max_length_validate(field, params, options),
-           {:ok, params} <- length_validate(field, params, options),
+           {:ok, params} <- inclusion_validate(@t, field, params, options),
+           {:ok, params} <- min_length_validate(@t, field, params, options),
+           {:ok, params} <- max_length_validate(@t, field, params, options),
+           {:ok, params} <- length_validate(@t, field, params, options),
            {:ok, params} <- regex_validate(field, params, options),
            {:ok, params} <-
              uuid_validate(field, params, options) do
@@ -34,97 +61,46 @@ defmodule Joi.Type.String do
     end
   end
 
-  def convert(field, params, _options) do
+  def convert(field, params, options) do
+    value = params[field]
+
     cond do
-      params[field] == nil ->
+      value == nil ->
         {:ok, params}
 
-      is_binary(params[field]) ->
+      String.valid?(value) ->
         {:ok, params}
 
-      is_number(params[field]) or is_boolean(params[field]) ->
+      is_atom(value) -> 
+        {:ok, %{params | field => Atom.to_string(value)}}
+
+      is_number(value) or is_boolean(value) ->
         {:ok, Map.update!(params, field, &to_string/1)}
 
       true ->
-        error_message(field, params, "#{field} must be a string", "string")
+        error("#{@t}.base", path: path(field, options), value: value)
     end
-  end
-
-  defp min_length_validate(field, params, %{min_length: min_length})
-       when is_integer(min_length) and min_length > 0 do
-    if params[field] == nil or String.length(params[field]) < min_length do
-      error_message(
-        field,
-        params,
-        "#{field} length must be greater than or equal to #{min_length} characters",
-        "string.min_length",
-        min_length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp min_length_validate(_field, params, %{}) do
-    {:ok, params}
-  end
-
-  defp max_length_validate(_field, params, %{max_length: nil}) do
-    {:ok, params}
-  end
-
-  defp max_length_validate(field, params, %{max_length: max_length})
-       when is_integer(max_length) and max_length >= 0 do
-    if Map.get(params, field) && String.length(params[field]) > max_length do
-      error_message(
-        field,
-        params,
-        "#{field} length must be less than or equal to #{max_length} characters",
-        "string.max_length",
-        max_length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp length_validate(field, params, %{length: length}) when is_integer(length) and length > 0 do
-    if params[field] == nil || String.length(params[field]) != length do
-      error_message(
-        field,
-        params,
-        "#{field} length must be #{length} characters",
-        "string.length",
-        length
-      )
-    else
-      {:ok, params}
-    end
-  end
-
-  defp length_validate(_field, params, %{length: _}) do
-    {:ok, params}
   end
 
   defp regex_validate(_field, params, %{regex: nil}) do
     {:ok, params}
   end
 
-  defp regex_validate(field, params, %{regex: regex}) do
+  defp regex_validate(field, params, %{regex: regex} = options) do
     if params[field] == nil or !Regex.match?(regex, params[field]) do
-      error_message(field, params, "#{field} must be in a valid format", "string.regex", regex)
+      error("#{@t}.format", path: path(field, options), value: params[field], regex: regex)
     else
       {:ok, params}
     end
   end
 
-  defp uuid_validate(field, params, %{uuid: true}) do
+  defp uuid_validate(field, params, %{uuid: true} = options) do
     case UUID.info(params[field]) do
       {:ok, _} ->
         {:ok, params}
 
       _ ->
-        error_message(field, params, "#{field} is not a valid uuid", "string.uuid", true)
+        error("#{@t}.uuid", path: path(field, options), value: params[field])
     end
   end
 

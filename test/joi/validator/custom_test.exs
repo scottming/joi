@@ -31,7 +31,7 @@ defmodule Joi.Validator.CustomTest do
       f1 = fn field, x -> {:ok, %{x | field => x[field] + 1}} end
       f2 = fn field, x -> {:ok, %{x | field => x[field] * 2}} end
       f3 = fn field, x -> {:ok, %{x | field => String.upcase(x[field])}} end
-      schema = %{id: [:number, f: f1, f: f2], username: [:string, f: f3]}
+      schema = %{id: [:integer, f: f1, f: f2], username: [:string, f: f3]}
 
       assert Joi.validate(data, schema) == {:ok, expected_data}
     end
@@ -53,7 +53,8 @@ defmodule Joi.Validator.CustomTest do
     test "error: custom function with empty options" do
       data = %{l: [1, 2, 2]}
       expected = "#{data[:l]} must be uniq"
-      schema = %{l: [:list, type: :number, f: &custom_function/2]}
+      # TODO: modify number
+      schema = %{l: [:list, type: :integer, f: &custom_function/2]}
 
       assert Joi.validate(data, schema) == {:error, [expected]}
     end
@@ -61,7 +62,8 @@ defmodule Joi.Validator.CustomTest do
     test "error: custom function with options" do
       data = %{l: [1, 2, 2]}
       expected = "uniq_error"
-      schema = %{l: [:list, type: :number, f: &custom_function(&1, &2, message: "uniq_error")]}
+      # TODO: modify number
+      schema = %{l: [:list, type: :integer, f: &custom_function(&1, &2, message: "uniq_error")]}
 
       assert Joi.validate(data, schema) == {:error, [expected]}
     end
@@ -69,14 +71,14 @@ defmodule Joi.Validator.CustomTest do
     test "success: custom function will called when data[field] exist" do
       data = %{id: 1}
       f = fn field, x -> {:ok, %{x | field => x[field] * 2}} end
-      schema = %{id: [:number, required: false, f: f]}
+      schema = %{id: [:integer, required: false, f: f]}
       assert Joi.validate(data, schema) == {:ok, %{id: 2}}
     end
 
     test "success: custom function will not be called when data[field] isn't exist" do
       data = %{id: 1}
       f = fn field, x -> {:ok, %{x | field => x[field] * 2}} end
-      schema = %{false_id: [:number, required: false, f: f]}
+      schema = %{false_id: [:integer, required: false, f: f]}
       assert Joi.validate(data, schema) == {:ok, %{id: 1}}
     end
   end
