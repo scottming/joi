@@ -19,7 +19,7 @@ defmodule Joi.Type do
       type == :datetime -> Type.Datetime.validate_field(field, data, options)
       type == :date -> Type.Date.validate_field(field, data, options)
       type == :map -> Type.Map.validate_field(field, data, options)
-      type -> {:error, "unknown type: #{type}"}
+      type -> raise "unknown type: #{type}"
     end
     |> custom_validate(field, custom_function_list, options)
   end

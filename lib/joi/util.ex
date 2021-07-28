@@ -1,7 +1,7 @@
 defmodule Joi.Util do
   defdelegate error(type, opts), to: Joi.Error, as: :new
 
-  @doc """
+  @doc ~S"""
   Returns all types that Joi supported
   """
   def all_types() do
@@ -18,12 +18,13 @@ defmodule Joi.Util do
     end
   end
 
-  @doc """
+  @doc ~S"""
   Returns a list of types that support the input validator
 
   Examples:
-    iex> types_of(:min_length)
-    [:string, atom, :list]
+
+      iex> types_of(:min_length)
+      [:string, atom, :list]
   """
   def types_by(validator) do
     all_types()
@@ -37,25 +38,27 @@ defmodule Joi.Util do
     |> Enum.map(&elem(&1, 0))
   end
 
-  @doc """
+  @doc ~S"""
   Return a module name when input a atom
 
   Examples:
-    iex> atom_type_to_mod(:atom)
-    Joi.Type.Atom
+
+      iex> atom_type_to_mod(:atom)
+      Joi.Type.Atom
   """
   def atom_type_to_mod(t) when is_atom(t) do
     Module.safe_concat(Joi.Type, t |> Atom.to_string() |> Macro.camelize())
   end
 
-  @doc """
+  @doc ~S"""
   Return the real path of error
 
   Examples:
-    iex> path("2", parent_path: [1])
-    [1, "2"]
-    iex> path("2", [])
-    ["2"]
+
+      iex> path("2", parent_path: [1])
+      [1, "2"]
+      iex> path("2", [])
+      ["2"]
   """
   def path(field, %{parent_path: parent_path}) do
     parent_path ++ [field]

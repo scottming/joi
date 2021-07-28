@@ -1,15 +1,13 @@
 defmodule Joi.Error do
   @doc """
   The struct of error
-
-  Examples:
-    iex> %Joi.Error{
-       type: "integer.min"
-       path: [:field],
-       message: "field must be greater than or equal to 3",
-       context: %{key: :field, value: nil},
-    }}
   """
+  @type t :: %{
+          type: String.t(),
+          message: String.t(),
+          path: list(),
+          context: map()
+        }
   defstruct [:type, :message, path: [], context: %{}]
 
   alias __MODULE__

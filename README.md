@@ -29,7 +29,7 @@ So the **goal** of this repository is:
 ```elixir
 def deps do
   [
-    {:joi, "~> 0.1.4"},
+    {:joi, "~> 0.2.0"},
   ]
 end
 ```
@@ -465,6 +465,7 @@ iex> Joi.validate(data, schema)
 
 ```
 
+<!-- MDOC !-->
 
 ## Contributing
 

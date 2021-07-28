@@ -1,14 +1,17 @@
 defmodule Joi.Validator.Skipping do
   import Joi.Util
 
+  @doc """
+  When [required: false] and params[field] == nil, skip validating.
+  """
   defmacro unless_skipping(type, field, params, options, do: unskipped) do
     quote do
       cond do
+        unless_field_not_nil(unquote(field), unquote(params)) ->
+          unquote(unskipped) 
+
         skip?(unquote(options)) ->
           {:ok, unquote(params)}
-
-        unless_field_not_nil(unquote(field), unquote(params)) ->
-          unquote(unskipped)
 
         true ->
           full_type = Atom.to_string(unquote(type)) <> "." <> "required"
