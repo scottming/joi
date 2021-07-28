@@ -2,8 +2,6 @@
 
 [![Hex.pm](https://img.shields.io/hexpm/v/joi.svg)](https://hex.pm/packages/joi)
 [![Build Docs](https://img.shields.io/badge/hexdocs-release-blue.svg)](https://hexdocs.pm/joi/readme.html)
-[![Build Status](https://travis-ci.com/scottming/joi.svg?branch=master)](https://travis-ci.com/scottming/joi)
-
 
 This project is inspired by [sideway/joi](https://github.com/sideway/joi) and [lob/litmus](https://github.com/lob/litmus).
 
