@@ -5,13 +5,15 @@ defmodule Joi.Type.Decimal do
   import Joi.Validator.Inclusion, only: [inclusion_validate: 4]
   import Joi.Validator.Max, only: [max_validate: 4]
   import Joi.Validator.Min, only: [min_validate: 4]
+  import Joi.Validator.Greater, only: [greater_validate: 4]
 
   @t :decimal
 
   @default_options [
     required: true,
     min: nil,
-    max: nil
+    max: nil,
+    greater: nil
   ]
 
   def message_map(options) do
@@ -24,6 +26,7 @@ defmodule Joi.Type.Decimal do
       "#{@t}.base" => "#{field} must be a #{@t}",
       "#{@t}.max" => "#{field} must be less than or equal to #{limit}",
       "#{@t}.min" => "#{field} must be greater than or equal to #{limit}",
+      "#{@t}.greater" => "#{field} must be greater than #{limit}",
       "#{@t}.inclusion" => "#{field} must be one of #{inspect(inclusion)}"
     }
   end
@@ -42,7 +45,8 @@ defmodule Joi.Type.Decimal do
       with {:ok, params} <- convert(field, params, options),
            {:ok, params} <- inclusion_validate(:decimal, field, params, options),
            {:ok, params} <- max_validate(:decimal, field, params, options),
-           {:ok, params} <- min_validate(:decimal, field, params, options) do
+           {:ok, params} <- min_validate(:decimal, field, params, options),
+           {:ok, params} <- greater_validate(:decimal, field, params, options) do
         {:ok, params}
       end
     end

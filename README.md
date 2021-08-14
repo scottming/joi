@@ -254,6 +254,32 @@ error types
   ```elixir
   %{limit: float() | integer()}
   ```
+* `decimal.greater`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | integer()}
+  ```
+
+  ```elixir
+
+    iex> schema = %{n: [:decimal, greater: 0]}
+    %{n: [:decimal, {:greater, 0}]}
+    iex> Joi.validate(%{n: 2}, schema)
+    {:ok, %{n: Decimal.new(2)}}
+    iex> Joi.validate(%{n: 0}, schema)
+    {:error,
+      [
+        %Joi.Error{
+          context: %{key: :n, limit: Decimal.new(0), value: Decimal.new(0)},
+          message: "n must be greater than 0",
+          path: [:n],
+          type: "decimal.greater"
+        }
+    ]}
+
+  ```
 * `decimal.required`
 
 #### Float
