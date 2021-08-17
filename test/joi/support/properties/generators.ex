@@ -21,4 +21,16 @@ defmodule Joi.Support.Properties.Generators do
   def integer_string() do
     map(integer(), &Integer.to_string/1)
   end
+
+  def is_integer_string?(s) do
+    case String.valid?(s) && Integer.parse(s) do
+      {i, ""} when is_integer(i) -> true
+      _ -> false
+    end
+  end
+
+  def reject(stream_data, pred) do
+    filter(stream_data, fn x -> not pred.(x) end)
+  end
 end
+

@@ -262,6 +262,8 @@ error types
   %{limit: float() | integer()}
   ```
 
+  Examples: 
+
   ```elixir
 
     iex> schema = %{n: [:decimal, greater: 0]}

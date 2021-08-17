@@ -17,7 +17,7 @@ defmodule Joi.Type.FloatTest do
   end
 
   defp random_incorrect_input() do
-    [boolean(), bitstring()] |> one_of()
+    [boolean(), bitstring() |> reject(&is_integer_string?/1)] |> one_of()
   end
 
   defp is_value_float?(m) do

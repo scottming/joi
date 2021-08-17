@@ -39,7 +39,7 @@ defmodule Joi.Type.Integer do
   def validate_field(field, params, options) do
     unless_skipping(:integer, field, params, options) do
       with {:ok, params} <- convert(field, params, options),
-           {:ok, params} <- inclusion_validate(:integer, field, params, options),
+           {:ok, params} <- inclusion_validate(:integer, field, params, options), 
            {:ok, params} <- min_validate(:integer, field, params, options),
            {:ok, params} <-
              max_validate(:integer, field, params, options) do
