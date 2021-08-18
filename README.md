@@ -197,7 +197,7 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | integer() | Decimal.t()}
+  %{limit: Decimal.t()}
   ```
 
   Examples:
@@ -252,14 +252,14 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | integer()}
+  %{limit: Decimal.t()}
   ```
 * `decimal.greater`
 
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | integer() | Decimal.t()}
+  %{limit: Decimal.t()}
   ```
 
   Examples: 
@@ -278,6 +278,35 @@ error types
           message: "n must be greater than 0",
           path: [:n],
           type: "decimal.greater"
+        }
+    ]}
+
+  ```
+
+* `decimal.less`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: Decimal.t()}
+  ```
+
+  Examples: 
+
+  ```elixir
+
+    iex> schema = %{n: [:decimal, less: 0]}
+    %{n: [:decimal, {:less, 0}]}
+    iex> Joi.validate(%{n: -1}, schema)
+    {:ok, %{n: Decimal.new(-1)}}
+    iex> Joi.validate(%{n: 0}, schema)
+    {:error,
+      [
+        %Joi.Error{
+          context: %{key: :n, limit: Decimal.new(0), value: Decimal.new(0)},
+          message: "n must be less than 0",
+          path: [:n],
+          type: "decimal.less"
         }
     ]}
 
@@ -310,6 +339,22 @@ error types
   ```elixir
   %{limit: float() | integer()}
   ```
+* `float.greater`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | integer()}
+  ```
+  
+* `float.less`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: float() | integer()}
+  ```
+
 * `float.required`
 
 #### Integer
@@ -336,6 +381,22 @@ error types
   ```elixir
   %{limit: integer()}
   ```
+* `integer.greater`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: integer()}
+  ```
+  
+* `integer.less`
+
+  Additional local context properties:
+
+  ```elixir
+  %{limit: integer()}
+  ```
+
 * `integer.required`
 
 #### List
