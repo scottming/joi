@@ -1,12 +1,13 @@
-defmodule Joi.Validator.GreaterTest do
+
+defmodule Joi.Validator.LessTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
   import Joi.Support.Util
   import Assertions
 
   @field :field
-  @validator :greater
-  @types [:decimal, :integer, :float]
+  @validator :less
+  @types [:decimal, :float, :integer]
 
   test "types that support #{@validator}" do
     assert_lists_equal(types_by(@validator), @types)
@@ -14,9 +15,9 @@ defmodule Joi.Validator.GreaterTest do
 
   describe "max validation" do
     property "success: with valid attrs when validate min" do
-      check all value <- positive_integer(), type <- member_of(@types) do
+      check all value <- negative_integer(), type <- member_of(@types) do
         data = %{@field => value}
-        options = [greater: 0]
+        options = [less: 0]
 
         module = atom_type_to_mod(type)
         assert {:ok, _} = apply(module, :validate_field, [@field, data, options])
@@ -24,16 +25,16 @@ defmodule Joi.Validator.GreaterTest do
     end
 
     property "errors: with invalid attrs when validate min" do
-      check all value <- negative_integer(), type <- member_of(@types) do
+      check all value <- positive_integer(), type <- member_of(@types) do
         data = %{@field => value}
-        options = [greater: 0]
+        options = [less: 0]
 
         module = atom_type_to_mod(type)
         assert {:error, error} = apply(module, :validate_field, [@field, data, options])
 
         assert %Joi.Error{
                  context: %{key: :field, limit: limit, value: _value},
-                 message: "field must be greater than 0",
+                 message: "field must be less than 0",
                  path: [:field],
                  type: error_type
                } = error

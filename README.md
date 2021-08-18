@@ -259,7 +259,7 @@ error types
   Additional local context properties:
 
   ```elixir
-  %{limit: float() | integer()}
+  %{limit: float() | integer() | Decimal.t()}
   ```
 
   Examples: 
