@@ -144,21 +144,28 @@ error types
   Examples:
 
   ```elixir
-
-  iex> schema = %{day: [:date]}
-  %{day: [:date]}
-  iex> Joi.validate(%{day: "2021-07-20"}, schema)
-  {:ok, %{day: ~D[2021-07-20]}}
-  iex> Joi.validate(%{day: "20210720"}, schema)
+  iex> schema = %{t: [:datetime]}
+  %{t: [:datetime]}
+  iex> d = %{t: ~U[2021-08-27 00:30:59.783833Z]}
+  %{t: ~U[2021-08-27 00:30:59.783833Z]}
+  iex> Joi.validate(d, schema)
+  {:ok, %{t: ~U[2021-08-27 00:30:59.783833Z]}}
+  iex> d2 = %{t: "2021-08-27 00:30:59.783833Z"}
+  %{t: "2021-08-27 00:30:59.783833Z"}
+  iex> Joi.validate(d2, schema)
+  {:ok, %{t: ~U[2021-08-27 00:30:59.783833Z]}}
+  iex> d3 = %{t: "2021-08-27 00:30:59"}
+  %{t: "2021-08-27 00:30:59"}
+  iex> Joi.validate(d3, schema)
   {:error,
-  [
-    %Joi.Error{
-      context: %{key: :day, value: "20210720"},
-      message: "day must be a valid ISO-8601 date",
-      path: [:day],
-      type: "date.base"
-    }
-  ]}
+   [
+     %Joi.Error{
+       context: %{key: :t, value: "2021-08-27 00:30:59"},
+       message: "t must be a valid ISO-8601 datetime",
+       path: [:t],
+       type: "datetime.base"
+     }
+   ]}
 
   ```
   * `datetime.required`
