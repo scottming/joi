@@ -1,4 +1,6 @@
 defmodule Joi.Type.Float do
+  @moduledoc false
+  
   import Joi.Validator.Skipping
   import Joi.Util
   import Joi.Validator.Max, only: [max_validate: 4]

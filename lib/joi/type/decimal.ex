@@ -1,4 +1,6 @@
 defmodule Joi.Type.Decimal do
+  @moduledoc false
+  
   require Decimal
   import Joi.Util
   import Joi.Validator.Skipping

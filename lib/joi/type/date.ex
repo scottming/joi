@@ -1,4 +1,5 @@
 defmodule Joi.Type.Date do
+  @moduledoc false
   import Joi.Validator.Skipping
   import Joi.Util
 

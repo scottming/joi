@@ -1,4 +1,6 @@
 defmodule Joi.Type.Map do
+  @moduledoc false
+  
   import Joi.Validator.Skipping
   import Joi.Util
 
